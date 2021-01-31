@@ -1,8 +1,10 @@
-/*package mypackage;
+package mypackage;
+
 public class HashFunction {
-    public void (char[]unhashedPassword) {
+    public byte[] hashPasswordLogin (char[] unhashedPassword) {
+        byte[] temp = new byte[16];
+        return temp;
     }
 }
 
 
- */

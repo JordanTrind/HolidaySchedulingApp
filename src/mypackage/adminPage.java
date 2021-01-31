@@ -1,7 +1,7 @@
 package mypackage;
 
 public class adminPage {
-    public void adminPageInt() {
+    public void adminView() {
 
     }
 }

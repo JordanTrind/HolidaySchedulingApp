@@ -5,44 +5,61 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-public class DatabaseQuerys {
-    private boolean isAdmin;
-    private final String url = "jdbc:mysql://localhost:3306/holidayschedulingapp";
-    private final String username = "java";
-    private final String password = "hsppassword";
+class DatabaseQuerys {
+    private static DatabaseQuerys javaDB = new DatabaseQuerys();
+    private DatabaseQuerys() {}
+    public static DatabaseQuerys getDatabaseQuerysInst() {
+        return javaDB;
+    }
 
-    public boolean LoginQuery(String Username, char[] Password) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            System.out.println("Database connected!");
-            String id = null;
-            String admin = null;
-            String password2 = new String(Password);
-            PreparedStatement psLogin = null;
+    private static Connection getConnection() throws SQLException {
+        Connection conn = null;
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/holidayschedulingapp", "java", "hsppassword");
+        return conn;
+    }
+
+    public boolean loginSelect(String Username, char[] Password) throws SQLException {
+        user newUser = user.getInstance();
+        Connection con = null;
+        PreparedStatement psLogin = null;
+        ResultSet resultsLogin = null;
+        int id = -1;
+        Boolean admin = null;
+        String password2 = new String(Password);
+        boolean resultOfQuery = false;
+
+        try {
+            con = this.getConnection();
             String sqlLoginQuery = "SELECT id, admin FROM users WHERE username=? and password=?;";
-            psLogin = connection.prepareStatement(sqlLoginQuery);
+            psLogin = con.prepareStatement(sqlLoginQuery);
             psLogin.setString(1, Username);
             psLogin.setString(2, password2);
-            ResultSet resultsLogin = psLogin.executeQuery();
+            resultsLogin = psLogin.executeQuery();
             while (resultsLogin.next()) {
-                id = resultsLogin.getString("id");
-                admin = resultsLogin.getString("admin");
+                id = resultsLogin.getInt("id");
+                admin = resultsLogin.getBoolean("admin");
             }
-            if (id != null) {
-                if (admin.equals("True")) {
-                    isAdmin = true;
-                } else {
-                    isAdmin = false;
-                }
-               return true;
+            if (id != -1) {
+                newUser.setUserID(id);
+                newUser.setUserAdmin(admin);
+                resultOfQuery = true;
             } else {
-                return false;
+                resultOfQuery = false;
             }
         } catch (SQLException exc) {
             throw new IllegalStateException("Cannot connect the database!", exc);
         }
-    }
-
-    public boolean getisAdmin () {
-        return isAdmin;
+        finally {
+            if (resultsLogin != null) {
+                resultsLogin.close();
+            }
+            if (psLogin != null) {
+                psLogin.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultOfQuery;
     }
 }
