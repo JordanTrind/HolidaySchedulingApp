@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 public class loginPage {
-    user userInst = user.getInstance();
-    DatabaseQuerys dbquery =DatabaseQuerys.getDatabaseQuerysInst();
+    private user userInst = user.getInstance();
+    private DatabaseQuerys dbquery =DatabaseQuerys.getDatabaseQuerysInst();
 
     public void loginView() {
         JFrame frame = new JFrame("Holiday Scheduling");
@@ -72,7 +72,6 @@ public class loginPage {
                 if (loginAction(Username, Password)) {
                     lblWelcome.setText("Login Successful, Please wait...");
                     frame.dispose();
-
                     if (userInst.getUserAdmin()) {
                         adminPage adminpage = new adminPage();
                         adminpage.adminView();
