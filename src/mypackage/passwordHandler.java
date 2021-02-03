@@ -1,5 +1,7 @@
 package mypackage;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.swing.*;
 import java.util.Arrays;
 
@@ -28,5 +30,16 @@ public class passwordHandler {
             status = "passwordmatcherror";
         }
         return status;
+    }
+
+    public String newPassword (char[] newPass) {
+        String salt = BCrypt.gensalt(9);
+        String tempPass = new String(newPass);
+        String finNew = BCrypt.hashpw(tempPass, salt);
+        return finNew;
+    }
+
+    public boolean checkPassword (String password, String actualPassword) {
+        return BCrypt.checkpw(password, actualPassword);
     }
 }

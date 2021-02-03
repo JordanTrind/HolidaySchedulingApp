@@ -1,4 +1,6 @@
 package mypackage;
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -132,9 +134,10 @@ public class userPage {
                         JOptionPane.showMessageDialog(null, "Passwords must be 8 digits long have an uppercase and lowercase letter and contain a number", "Password Error", JOptionPane.INFORMATION_MESSAGE);
                         break;
                     case "success":
-                        //password hash goes here
+                        int id = userInst.getUserID();
+                        String newPass = pCheck.newPassword(firstPass);
                         try {
-                            if (dbquery.passwordUpdate(userInst.getUserID(), firstPass)) {
+                            if (dbquery.passwordUpdate(id, newPass)) {
 
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error changing password", "Password Error", JOptionPane.INFORMATION_MESSAGE);

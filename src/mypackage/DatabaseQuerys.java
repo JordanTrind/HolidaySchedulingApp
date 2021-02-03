@@ -27,21 +27,23 @@ class DatabaseQuerys {
         Boolean admin = null;
         String rank = null;
         String tempPassString = new String(password);
+        String hashedPassword = "";
         boolean resultOfQuery = false;
+        passwordHandler pwCheck = new passwordHandler();
 
         try {
             con = this.getConnection();
-            String sqlLoginQuery = "SELECT id, rank, admin FROM users WHERE username=? and password=?;";
+            String sqlLoginQuery = "SELECT id, password, rank, admin FROM users WHERE username=?;";
             psLogin = con.prepareStatement(sqlLoginQuery);
             psLogin.setString(1, username);
-            psLogin.setString(2, tempPassString);
             resultsLogin = psLogin.executeQuery();
             while (resultsLogin.next()) {
                 id = resultsLogin.getInt("id");
+                hashedPassword = resultsLogin.getString("password");
                 rank = resultsLogin.getString("rank");
                 admin = resultsLogin.getBoolean("admin");
             }
-            if (id != -1) {
+            if ((id != -1) && (pwCheck.checkPassword(tempPassString, hashedPassword))) {
                 newUser.setUserID(id);
                 newUser.setUsername(username);
                 newUser.setUserRank(rank);
@@ -69,18 +71,17 @@ class DatabaseQuerys {
         return resultOfQuery;
     }
 
-    public boolean passwordUpdate(int id, char[] password) throws SQLException {
+    public boolean passwordUpdate(int id, String password) throws SQLException {
         Connection con = null;
         PreparedStatement psPasswordUpdate = null;
         int recordCount = 0;
         boolean resultUpdate = false;
-        String tempPasswordString = new String(password);
 
         try {
             con = this.getConnection();
             String sqlPasswordUpdate = "UPDATE users SET password = ? WHERE id = ?";
             psPasswordUpdate = con.prepareStatement(sqlPasswordUpdate);
-            psPasswordUpdate.setString(1, tempPasswordString);
+            psPasswordUpdate.setString(1, password);
             psPasswordUpdate.setString(2, Integer.toString(id));
             recordCount = psPasswordUpdate.executeUpdate();
             if (recordCount == 1) {
