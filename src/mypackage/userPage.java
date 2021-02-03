@@ -1,12 +1,13 @@
 package mypackage;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 public class userPage {
     user userInst = user.getInstance();
+    DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
     public void userView() {
         JFrame uFrame = new JFrame("Holiday Scheduling - User Menu");
         uFrame.setPreferredSize(new Dimension(500,500));
@@ -49,8 +50,22 @@ public class userPage {
         parentPanel.add(sHolPanel, "sHolPanel");
 
         JPanel aInfoPanel = new JPanel();
-        JLabel lblAccInfo = new JLabel("This is Account Info");
-        aInfoPanel.add(lblAccInfo);
+        JLabel lblUsername = new JLabel("Username: " + userInst.getUsername());
+        JLabel lblRank = new JLabel("Rank: " + userInst.getUserRank());
+        JLabel lblPasswordReq = new JLabel("Password's must be at least 8 digits long and contain a number, uppercase and lowercase number");
+        JLabel lblPassword1 = new JLabel("Change Password: ");
+        JPasswordField txtPassword1 = new JPasswordField();
+        JLabel lblPassword2 = new JLabel("Confirm new Password: ");
+        JPasswordField txtPassword2 = new JPasswordField();
+        JButton btnPasswordChange = new JButton("Change Password");
+        aInfoPanel.add(lblUsername);
+        aInfoPanel.add(lblRank);
+        aInfoPanel.add(lblPasswordReq);
+        aInfoPanel.add(lblPassword1);
+        aInfoPanel.add(txtPassword1);
+        aInfoPanel.add(lblPassword2);
+        aInfoPanel.add(txtPassword2);
+        aInfoPanel.add(btnPasswordChange);
         parentPanel.add(aInfoPanel, "aInfoPanel");
 
         cLayout.show(parentPanel, "rHolPanel");
@@ -99,6 +114,42 @@ public class userPage {
                 uFrame.dispose();
                 loginPage rtrntologin = new loginPage();
                 rtrntologin.loginView();
+            }
+        });
+
+        //Move this to password handler
+        btnPasswordChange.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                char[] firstPass = txtPassword1.getPassword();
+                char[] secondPass = txtPassword2.getPassword();
+                passwordHandler pCheck = new passwordHandler();
+                switch (pCheck.passwordReqCheck(firstPass, secondPass)) {
+                    case "passwordmatcherror":
+                        JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    case "passwordreqerror":
+                        JOptionPane.showMessageDialog(null, "Passwords must be 8 digits long have an uppercase and lowercase letter and contain a number", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    case "success":
+                        //password hash goes here
+                        try {
+                            if (dbquery.passwordUpdate(userInst.getUserID(), firstPass)) {
+
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error changing password", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                        } catch (Exception exec) {
+                            new IllegalStateException("Password update failed at Database Query", exec);
+                        }
+                        JOptionPane.showMessageDialog(null, "Password successfully changed", "Password Change Success", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(null, "Error changing password", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                }
+                txtPassword1.setText("");
+                txtPassword2.setText("");
             }
         });
     }

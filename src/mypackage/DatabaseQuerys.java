@@ -18,37 +18,43 @@ class DatabaseQuerys {
         return conn;
     }
 
-    public boolean loginSelect(String Username, char[] Password) throws SQLException {
+    public boolean loginSelect(String username, char[] password) throws SQLException {
         user newUser = user.getInstance();
         Connection con = null;
         PreparedStatement psLogin = null;
         ResultSet resultsLogin = null;
         int id = -1;
         Boolean admin = null;
-        String password2 = new String(Password);
+        String rank = null;
+        String tempPassString = new String(password);
         boolean resultOfQuery = false;
 
         try {
             con = this.getConnection();
-            String sqlLoginQuery = "SELECT id, admin FROM users WHERE username=? and password=?;";
+            String sqlLoginQuery = "SELECT id, rank, admin FROM users WHERE username=? and password=?;";
             psLogin = con.prepareStatement(sqlLoginQuery);
-            psLogin.setString(1, Username);
-            psLogin.setString(2, password2);
+            psLogin.setString(1, username);
+            psLogin.setString(2, tempPassString);
             resultsLogin = psLogin.executeQuery();
             while (resultsLogin.next()) {
                 id = resultsLogin.getInt("id");
+                rank = resultsLogin.getString("rank");
                 admin = resultsLogin.getBoolean("admin");
             }
             if (id != -1) {
                 newUser.setUserID(id);
+                newUser.setUsername(username);
+                newUser.setUserRank(rank);
                 newUser.setUserAdmin(admin);
                 resultOfQuery = true;
             } else {
                 resultOfQuery = false;
             }
-        } catch (SQLException exc) {
-            throw new IllegalStateException("Cannot connect the database!", exc);
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
         }
+
         finally {
             if (resultsLogin != null) {
                 resultsLogin.close();
@@ -61,5 +67,37 @@ class DatabaseQuerys {
             }
         }
         return resultOfQuery;
+    }
+
+    public boolean passwordUpdate(int id, char[] password) throws SQLException {
+        Connection con = null;
+        PreparedStatement psPasswordUpdate = null;
+        int recordCount = 0;
+        boolean resultUpdate = false;
+        String tempPasswordString = new String(password);
+
+        try {
+            con = this.getConnection();
+            String sqlPasswordUpdate = "UPDATE users SET password = ? WHERE id = ?";
+            psPasswordUpdate = con.prepareStatement(sqlPasswordUpdate);
+            psPasswordUpdate.setString(1, tempPasswordString);
+            psPasswordUpdate.setString(2, Integer.toString(id));
+            recordCount = psPasswordUpdate.executeUpdate();
+            if (recordCount == 1) {
+                resultUpdate = true;
+            } else {
+                resultUpdate = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("Password Update Failed",e);
+        } finally {
+            if (psPasswordUpdate != null) {
+                psPasswordUpdate.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultUpdate;
     }
 }
