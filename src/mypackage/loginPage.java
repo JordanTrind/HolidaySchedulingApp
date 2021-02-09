@@ -31,7 +31,7 @@ public class loginPage {
 
         //Setting up Components of the Panel
         JLabel lblWelcome = new JLabel("Welcome Back...");
-        lblWelcome.setMinimumSize(new Dimension(35,10));
+        lblWelcome.setPreferredSize(new Dimension(175,25));
         JLabel lblUsername = new JLabel("username: ");
         JLabel lblPassword = new JLabel("Password: ");
         JTextField txtUsername = new JTextField(16);
@@ -40,30 +40,30 @@ public class loginPage {
 
         //Below each component's variables are defined for the GridBagLayout
         GridBagConstraints welcomeGrid = new GridBagConstraints();
-        welcomeGrid.weightx = 0;
+        welcomeGrid.weightx = 1;
         welcomeGrid.gridx = 0;
         welcomeGrid.gridy = 0;
         welcomeGrid.gridwidth = 3;
         pnlWelcome.add(lblWelcome, welcomeGrid);
 
         GridBagConstraints usernameLblGrid = new GridBagConstraints();
-        usernameLblGrid.weightx = 0.5;
+        usernameLblGrid.weightx = 1;
         usernameLblGrid.gridx = 0;
         usernameLblGrid.gridy = 1;
         pnlWelcome.add(lblUsername, usernameLblGrid);
         GridBagConstraints usernameTxtGrid = new GridBagConstraints();
-        usernameTxtGrid.weightx = 0.5;
+        usernameTxtGrid.weightx = 1;
         usernameTxtGrid.gridx = 3;
         usernameTxtGrid.gridy = 1;
         pnlWelcome.add(txtUsername, usernameTxtGrid);
 
         GridBagConstraints passwordLblGrid = new GridBagConstraints();
-        passwordLblGrid.weightx = 0.5;
+        passwordLblGrid.weightx = 1;
         passwordLblGrid.gridx = 0;
         passwordLblGrid.gridy = 2;
         pnlWelcome.add(lblPassword, passwordLblGrid);
         GridBagConstraints passwordTxtGrid = new GridBagConstraints();
-        passwordTxtGrid.weightx = 0.5;
+        passwordTxtGrid.weightx = 1;
         passwordTxtGrid.gridx = 3;
         passwordTxtGrid.gridy = 2;
         pnlWelcome.add(txtPassword, passwordTxtGrid);

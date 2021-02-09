@@ -13,6 +13,7 @@ public class user {
 
     //Variables for the user object
     private int userID;
+    private int userAllowance;
     private String username;
     private String userRank;
     private boolean userAdmin;
@@ -52,5 +53,12 @@ public class user {
     }
     public void setUserAdmin (boolean admin) {
         this.userAdmin = admin;
+    }
+
+    public int getUserAllowance() {
+        return userAllowance;
+    }
+    public void setUserAllowance (int allowance) {
+        this.userAllowance = allowance;
     }
 }
