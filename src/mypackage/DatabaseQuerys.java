@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.HashMap;
 
 class DatabaseQuerys {
     private static DatabaseQuerys javaDB = new DatabaseQuerys();
@@ -169,5 +170,9 @@ class DatabaseQuerys {
             }
         }
         return resultUpdate;
+    }
+
+    public HashMap userHolidaySelect(int id) throws SQLException {
+
     }
 }

@@ -54,7 +54,7 @@ public class userPage {
         uMenu.add(logout);
         uFrame.setJMenuBar(uMenuBar);
 
-        JPanel rHolPanel = new JPanel();
+        JPanel rHolPanel = new JPanel(new GridBagLayout());
         JLabel lblAllowance = new JLabel("Holiday Allowance: " + userInst.getUserAllowance());
         JLabel lblStart = new JLabel("Start Date: ");
         UtilDateModel sdateModel = new UtilDateModel();
@@ -73,12 +73,44 @@ public class userPage {
         JDatePanelImpl edatePanel = new JDatePanelImpl(edateModel, edateProp);
         JDatePickerImpl endDate = new JDatePickerImpl(edatePanel, new DateTextFormatter());
         JButton btnRHol = new JButton("Submit Holiday");
-        rHolPanel.add(lblAllowance);
-        rHolPanel.add(lblStart);
-        rHolPanel.add(startDate);
-        rHolPanel.add(lblEnd);
-        rHolPanel.add(endDate);
-        rHolPanel.add(btnRHol);
+
+        GridBagConstraints allowanceGrid = new GridBagConstraints();
+        allowanceGrid.weightx = 1;
+        allowanceGrid.gridx = 0;
+        allowanceGrid.gridy = 0;
+        allowanceGrid.gridwidth = 2;
+        rHolPanel.add(lblAllowance, allowanceGrid);
+
+        GridBagConstraints lblStartGrid = new GridBagConstraints();
+        lblStartGrid.weightx = 1;
+        lblStartGrid.gridx = 0;
+        lblStartGrid.gridy = 1;
+        rHolPanel.add(lblStart, lblStartGrid);
+
+        GridBagConstraints sDateGrid = new GridBagConstraints();
+        sDateGrid.weightx = 1;
+        sDateGrid.gridx = 1;
+        sDateGrid.gridy = 1;
+        rHolPanel.add(startDate, sDateGrid);
+
+        GridBagConstraints lblEndGrid = new GridBagConstraints();
+        lblEndGrid.weightx = 1;
+        lblEndGrid.gridx = 0;
+        lblEndGrid.gridy = 2;
+        rHolPanel.add(lblEnd, lblEndGrid);
+
+        GridBagConstraints eDateGrid = new GridBagConstraints();
+        eDateGrid.weightx = 1;
+        eDateGrid.gridx = 1;
+        eDateGrid.gridy = 2;
+        rHolPanel.add(endDate, eDateGrid);
+
+        GridBagConstraints btnRHolGrid = new GridBagConstraints();
+        btnRHolGrid.weightx = 1;
+        btnRHolGrid.gridx = 1;
+        btnRHolGrid.gridy = 3;
+        rHolPanel.add(btnRHol, btnRHolGrid);
+
         parentPanel.add(rHolPanel, "rHolPanel");
 
         JPanel sHolPanel = new JPanel();
