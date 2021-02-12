@@ -6,6 +6,7 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -110,12 +111,20 @@ public class userPage {
         btnRHolGrid.gridx = 1;
         btnRHolGrid.gridy = 3;
         rHolPanel.add(btnRHol, btnRHolGrid);
-
         parentPanel.add(rHolPanel, "rHolPanel");
 
         JPanel sHolPanel = new JPanel();
-        JLabel lblStatus = new JLabel("This is Holiday Status");
-        sHolPanel.add(lblStatus);
+        JTable tblHolidayStatus = new JTable();
+        DefaultTableModel tblModel = null;
+        JScrollPane jspaneTbl = new JScrollPane(tblHolidayStatus);
+        try {
+            tblModel = dbquery.userHolidaySelect(userInst.getUserID());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        tblHolidayStatus.setModel(tblModel);
+        tblHolidayStatus.setEnabled(false);
+        sHolPanel.add(jspaneTbl);
         parentPanel.add(sHolPanel, "sHolPanel");
 
         JPanel aInfoPanel = new JPanel(new GridBagLayout());
@@ -178,7 +187,6 @@ public class userPage {
         btnChangeGrid.gridx = 1;
         btnChangeGrid.gridy = 5;
         aInfoPanel.add(btnPasswordChange, btnChangeGrid);
-
         parentPanel.add(aInfoPanel, "aInfoPanel");
 
         cLayout.show(parentPanel, "rHolPanel");

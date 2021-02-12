@@ -1,4 +1,5 @@
 package mypackage;
+import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -172,7 +173,45 @@ class DatabaseQuerys {
         return resultUpdate;
     }
 
-    public HashMap userHolidaySelect(int id) throws SQLException {
+    public DefaultTableModel userHolidaySelect(int id) throws SQLException {
+        DefaultTableModel model = new DefaultTableModel(new String[] {"Holiday Start", "Holiday End", "Date Requested", "Date Approved","Status"}, 0);
 
+        Connection con = null;
+        PreparedStatement psUserHol = null;
+        ResultSet resultsUserHol = null;
+        String sDate, eDate, rDate, aDate, status = "";
+
+        try {
+            con = this.getConnection();
+            String sqlUHolidayQuery = "SELECT holiday_start, holiday_end, date_requested, approval_date, status FROM holidays WHERE user_id = ?;";
+            psUserHol = con.prepareStatement(sqlUHolidayQuery);
+            psUserHol.setString(1, Integer.toString(id));
+            resultsUserHol = psUserHol.executeQuery();
+            while (resultsUserHol.next()) {
+                sDate = resultsUserHol.getString("holiday_start");
+                eDate = resultsUserHol.getString("holiday_end");
+                rDate = resultsUserHol.getString("date_requested");
+                aDate = resultsUserHol.getString("approval_date");
+                status = resultsUserHol.getString("status");
+                model.addRow(new Object[] {sDate, eDate, rDate, aDate, status});
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsUserHol != null) {
+                resultsUserHol.close();
+            }
+            if (psUserHol != null) {
+                psUserHol.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+
+        return model;
     }
 }
