@@ -117,8 +117,26 @@ public class adminPage {
         btnAddUserGrid.gridx = 1;
         btnAddUserGrid.gridy = 4;
         addUserPanel.add(btnAddUser, btnAddUserGrid);
-
         parentPanel.add(addUserPanel, "addUserPanel");
+
+        JPanel editUserPanel = new JPanel(new GridBagLayout());
+        JLabel lblSearch = new JLabel("Search: ");
+        JTextField txtSearch = new JTextField(16);
+        JTable tblUsers = new JTable();
+
+        GridBagConstraints lblSearchGrid = new GridBagConstraints();
+        lblSearchGrid.weightx = 1;
+        lblSearchGrid.gridx = 0;
+        lblSearchGrid.gridy = 0;
+        editUserPanel.add(lblSearch, lblSearchGrid);
+
+        GridBagConstraints txtSearchGrid = new GridBagConstraints();
+        txtSearchGrid.weightx = 1;
+        lblSearchGrid.gridx = 1;
+        lblSearchGrid.gridy = 0;
+        editUserPanel.add(txtSearch, txtSearchGrid);
+
+        parentPanel.add(editUserPanel, "editUserPanel");
 
         cLayout.show(parentPanel, "manageRequestPanel");
         aFrame.setVisible(true);
@@ -126,6 +144,11 @@ public class adminPage {
         addUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "addUserPanel"); }
+        });
+
+        editUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "editUserPanel"); }
         });
 
         viewUserPage.addActionListener(new ActionListener() {
@@ -157,12 +180,33 @@ public class adminPage {
                     admin = 1;
                 }
                 int allowance = (int) spnAllowance.getValue();
-                try {
-                    dbquery.userAdd(username, rank, admin, allowance);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+                addUserFunc(username, rank, admin, allowance);
             }
         });
+    }
+
+    private void addUserFunc(String username, int rank, int admin, int allowance) {
+        boolean userSelectRes = false;
+        try {
+            userSelectRes = dbquery.checkUserSelect(username);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        if (username.equals("") || userSelectRes) {
+            JOptionPane.showMessageDialog(null, "Username already exists or no username entered!", "Add User Error", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        try {
+            boolean result = dbquery.userAdd(username, rank, admin, allowance);
+            if (result) {
+                JOptionPane.showMessageDialog(null, "User added!", "Add User", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error adding user!", "Add User Error", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

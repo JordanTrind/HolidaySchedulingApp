@@ -325,4 +325,41 @@ class DatabaseQuerys {
         }
         return ranksAll;
     }
+
+    public boolean checkUserSelect (String username) throws SQLException {
+        Connection con = null;
+        PreparedStatement psUserSelect = null;
+        ResultSet resultsUserSelect = null;
+        int id = -1;
+
+        try {
+            con = this.getConnection();
+            String sqlUserSelectQuery = "SELECT id FROM users WHERE username = ?;";
+            psUserSelect = con.prepareStatement(sqlUserSelectQuery);
+            psUserSelect.setString(1, username);
+            resultsUserSelect = psUserSelect.executeQuery();
+            while (resultsUserSelect.next()) {
+                id = resultsUserSelect.getInt("id");;
+            }
+            if (id != -1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsUserSelect != null) {
+                resultsUserSelect.close();
+            }
+            if (psUserSelect != null) {
+                psUserSelect.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
 }
