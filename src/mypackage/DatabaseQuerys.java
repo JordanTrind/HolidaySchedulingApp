@@ -5,8 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 class DatabaseQuerys {
     private static DatabaseQuerys javaDB = new DatabaseQuerys();
@@ -28,7 +27,7 @@ class DatabaseQuerys {
         ResultSet resultsLogin = null;
         int id = -1;
         Boolean admin = null;
-        String rank = null;
+        int rank = -1;
         int allowance = -1;
         String tempPassString = new String(password);
         String hashedPassword = "";
@@ -44,14 +43,14 @@ class DatabaseQuerys {
             while (resultsLogin.next()) {
                 id = resultsLogin.getInt("id");
                 hashedPassword = resultsLogin.getString("password");
-                rank = resultsLogin.getString("rank");
+                rank = resultsLogin.getInt("rank");
                 admin = resultsLogin.getBoolean("admin");
                 allowance = resultsLogin.getInt("allowance");
             }
             if ((id != -1) && (pwCheck.checkPassword(tempPassString, hashedPassword))) {
                 newUser.setUserID(id);
                 newUser.setUsername(username);
-                newUser.setUserRank(rank);
+                newUser.setUserRank(rankSelect(rank));
                 newUser.setUserAdmin(admin);
                 newUser.setUserAllowance(allowance);
                 resultOfQuery = true;
@@ -213,5 +212,116 @@ class DatabaseQuerys {
         }
 
         return model;
+    }
+
+    public boolean userAdd(String username, int rank, int admin, int allowance) throws SQLException {
+        Connection con = null;
+        PreparedStatement psUserAdd = null;
+        passwordHandler pwDefault = new passwordHandler();
+        char[] defaultPass = {'C','h','a','n','g','e','M','e','1'};
+        String password = pwDefault.newPassword(defaultPass);
+        int recordCounter = 0;
+        Boolean resultAdd = false;
+
+        try {
+            con = this.getConnection();
+            String sqlUserAdd = "INSERT INTO users(username, password, rank, admin, allowance)values(?,?,?,?,?);";
+            psUserAdd = con.prepareStatement(sqlUserAdd);
+            psUserAdd.setString(1, username);
+            psUserAdd.setString(2, password);
+            psUserAdd.setString(3, Integer.toString(rank));
+            psUserAdd.setString(4, Integer.toString(admin));
+            psUserAdd.setString(5, Integer.toString(allowance));
+            recordCounter = psUserAdd.executeUpdate();
+            if (recordCounter == 1) {
+                resultAdd = true;
+            } else {
+                resultAdd = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("Adding user failed!",e);
+        } finally {
+            if (psUserAdd != null) {
+                psUserAdd.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultAdd;
+    }
+
+    public String rankSelect(int id) throws SQLException {
+        Connection con = null;
+        PreparedStatement psRank = null;
+        ResultSet resultsRank = null;
+        String rank = "";
+
+        try {
+            con = this.getConnection();
+            String sqlRankQuery = "SELECT rank FROM ranks WHERE id = ?;";
+            psRank = con.prepareStatement(sqlRankQuery);
+            psRank.setString(1, Integer.toString(id));
+            resultsRank = psRank.executeQuery();
+            while (resultsRank.next()) {
+                rank = resultsRank.getString("rank");;
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsRank != null) {
+                resultsRank.close();
+            }
+            if (psRank != null) {
+                psRank.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return rank;
+    }
+
+    public ArrayList<ranks> rankSelectAll() throws SQLException {
+        ArrayList<ranks> ranksAll = new ArrayList<ranks>();
+        Connection con = null;
+        PreparedStatement psRankAll = null;
+        ResultSet resultsRankAll = null;
+        int rankId = -1;
+        String rankName = "";
+        int importance = -1;
+
+        try {
+            con = this.getConnection();
+            String sqlRankQuery = "SELECT id, rank, importance FROM ranks;";
+            psRankAll = con.prepareStatement(sqlRankQuery);
+            resultsRankAll = psRankAll.executeQuery();
+            while (resultsRankAll.next()) {
+                rankId = resultsRankAll.getInt("id");
+                rankName = resultsRankAll.getString("rank");
+                importance = resultsRankAll.getInt("importance");
+                ranks rank = new ranks(rankId, rankName, importance);
+                ranksAll.add(rank);
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsRankAll != null) {
+                resultsRankAll.close();
+            }
+            if (psRankAll != null) {
+                psRankAll.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return ranksAll;
     }
 }
