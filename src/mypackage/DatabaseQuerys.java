@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class DatabaseQuerys {
     private static DatabaseQuerys javaDB = new DatabaseQuerys();
@@ -285,8 +286,8 @@ class DatabaseQuerys {
         return rank;
     }
 
-    public ArrayList<ranks> rankSelectAll() throws SQLException {
-        ArrayList<ranks> ranksAll = new ArrayList<ranks>();
+    public HashMap<String, ranks> rankSelectAll() throws SQLException {
+        HashMap<String, ranks> ranksAll = new HashMap<>();
         Connection con = null;
         PreparedStatement psRankAll = null;
         ResultSet resultsRankAll = null;
@@ -304,7 +305,7 @@ class DatabaseQuerys {
                 rankName = resultsRankAll.getString("rank");
                 importance = resultsRankAll.getInt("importance");
                 ranks rank = new ranks(rankId, rankName, importance);
-                ranksAll.add(rank);
+                ranksAll.put(rankName, rank);
             }
 
         } catch (Exception e) {

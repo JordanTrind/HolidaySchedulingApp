@@ -7,11 +7,12 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class adminPage {
     DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
+    HashMap<String, ranks> allRanks = new HashMap<>();
     public void adminView() {
-        ArrayList<ranks> allRanks = new ArrayList<ranks>();
         try {
             allRanks = dbquery.rankSelectAll();
         } catch (SQLException throwables) {
@@ -55,15 +56,12 @@ public class adminPage {
         JLabel lblUsername = new JLabel("Username: ");
         JTextField txtUsername = new JTextField(16);
         JLabel lblRank = new JLabel("Rank: ");
-        String[] ranksArr = new String[allRanks.size()];
-        for (int i = 0; i < allRanks.size(); i++) {
-            ranksArr[i] = allRanks.get(i).getRank();
-        }
+        String[] ranksArr = allRanks.keySet().toArray(new String[0]);
         JComboBox cmbRank = new JComboBox(ranksArr);
         JLabel lblAdmin = new JLabel("Admin: ");
         JCheckBox chkAdmin = new JCheckBox();
         JLabel lblAllowance = new JLabel("Allowance: ");
-        JSpinner spnAllowance = new JSpinner(new SpinnerNumberModel(0, 0, 28, 1));
+        JSpinner spnAllowance = new JSpinner(new SpinnerNumberModel(28, 0, 28, 1));
         JButton btnAddUser = new JButton("Add User");
 
         addUserPanel.add(lblUsername);
@@ -90,7 +88,8 @@ public class adminPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String username = txtUsername.getText();
-                int rank = 1;
+                ranks selectedRank = allRanks.get(cmbRank.getSelectedItem());
+                int rank = selectedRank.getRankID();
                 int admin = 0;
                 if (chkAdmin.isSelected()) {
                     admin = 1;

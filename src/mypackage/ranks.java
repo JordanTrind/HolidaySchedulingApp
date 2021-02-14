@@ -11,5 +11,7 @@ public class ranks {
         this.importance = importance;
     }
 
-    public String getRank() { return rank; }
+    public String getRankName() { return rank; }
+
+    public int getRankID() { return id; }
 }
