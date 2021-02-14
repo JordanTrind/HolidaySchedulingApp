@@ -52,7 +52,7 @@ public class adminPage {
         aMenu.add(logout);
         aFrame.setJMenuBar(aMenuBar);
 
-        JPanel addUserPanel = new JPanel();
+        JPanel addUserPanel = new JPanel(new GridBagLayout());
         JLabel lblUsername = new JLabel("Username: ");
         JTextField txtUsername = new JTextField(16);
         JLabel lblRank = new JLabel("Rank: ");
@@ -64,15 +64,59 @@ public class adminPage {
         JSpinner spnAllowance = new JSpinner(new SpinnerNumberModel(28, 0, 28, 1));
         JButton btnAddUser = new JButton("Add User");
 
-        addUserPanel.add(lblUsername);
-        addUserPanel.add(txtUsername);
-        addUserPanel.add(lblRank);
-        addUserPanel.add(cmbRank);
-        addUserPanel.add(lblAdmin);
-        addUserPanel.add(chkAdmin);
-        addUserPanel.add(lblAllowance);
-        addUserPanel.add(spnAllowance);
-        addUserPanel.add(btnAddUser);
+        GridBagConstraints lblUsernameGrid = new GridBagConstraints();
+        lblUsernameGrid.weightx = 1;
+        lblUsernameGrid.gridx = 0;
+        lblUsernameGrid.gridy = 0;
+        addUserPanel.add(lblUsername, lblUsernameGrid);
+
+        GridBagConstraints txtUsernameGrid = new GridBagConstraints();
+        lblUsernameGrid.weightx = 1;
+        lblUsernameGrid.gridx = 1;
+        lblUsernameGrid.gridy = 0;
+        addUserPanel.add(txtUsername, txtUsernameGrid);
+
+        GridBagConstraints lblRankGrid = new GridBagConstraints();
+        lblRankGrid.weightx = 1;
+        lblRankGrid.gridx = 0;
+        lblRankGrid.gridy = 1;
+        addUserPanel.add(lblRank, lblRankGrid);
+
+        GridBagConstraints cmbRankGrid = new GridBagConstraints();
+        cmbRankGrid.weightx = 1;
+        cmbRankGrid.gridx = 1;
+        cmbRankGrid.gridy = 1;
+        addUserPanel.add(cmbRank, cmbRankGrid);
+
+        GridBagConstraints lblAdminGrid = new GridBagConstraints();
+        lblAdminGrid.weightx = 1;
+        lblAdminGrid.gridx = 0;
+        lblAdminGrid.gridy = 2;
+        addUserPanel.add(lblAdmin, lblAdminGrid);
+
+        GridBagConstraints chkAdminGrid = new GridBagConstraints();
+        chkAdminGrid.weightx = 1;
+        chkAdminGrid.gridx = 1;
+        chkAdminGrid.gridy = 2;
+        addUserPanel.add(chkAdmin, chkAdminGrid);
+
+        GridBagConstraints lblAllowanceGrid = new GridBagConstraints();
+        lblAllowanceGrid.weightx = 1;
+        lblAllowanceGrid.gridx = 0;
+        lblAllowanceGrid.gridy = 3;
+        addUserPanel.add(lblAllowance, lblAllowanceGrid);
+
+        GridBagConstraints spnAllowanceGrid = new GridBagConstraints();
+        spnAllowanceGrid.weightx = 1;
+        spnAllowanceGrid.gridx = 1;
+        spnAllowanceGrid.gridy = 3;
+        addUserPanel.add(spnAllowance, spnAllowanceGrid);
+
+        GridBagConstraints btnAddUserGrid = new GridBagConstraints();
+        btnAddUserGrid.weightx = 1;
+        btnAddUserGrid.gridx = 1;
+        btnAddUserGrid.gridy = 4;
+        addUserPanel.add(btnAddUser, btnAddUserGrid);
 
         parentPanel.add(addUserPanel, "addUserPanel");
 
@@ -82,6 +126,24 @@ public class adminPage {
         addUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "addUserPanel"); }
+        });
+
+        viewUserPage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aFrame.dispose();
+                userPage rtrntouser = new userPage();
+                rtrntouser.userView();
+            }
+        });
+
+        logout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aFrame.dispose();
+                loginPage rtrntologin = new loginPage();
+                rtrntologin.loginView();
+            }
         });
 
         btnAddUser.addActionListener(new ActionListener() {
