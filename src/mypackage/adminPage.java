@@ -1,9 +1,13 @@
 package mypackage;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +22,7 @@ public class adminPage {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        String[] ranksArr = allRanks.keySet().toArray(new String[0]);
 
         JFrame aFrame = new JFrame("Holiday Scheduling - Admin Menu");
         aFrame.setSize(new Dimension(600,500));
@@ -56,7 +61,6 @@ public class adminPage {
         JLabel lblUsername = new JLabel("Username: ");
         JTextField txtUsername = new JTextField(16);
         JLabel lblRank = new JLabel("Rank: ");
-        String[] ranksArr = allRanks.keySet().toArray(new String[0]);
         JComboBox cmbRank = new JComboBox(ranksArr);
         JLabel lblAdmin = new JLabel("Admin: ");
         JCheckBox chkAdmin = new JCheckBox();
@@ -120,9 +124,21 @@ public class adminPage {
         parentPanel.add(addUserPanel, "addUserPanel");
 
         JPanel editUserPanel = new JPanel(new GridBagLayout());
-        JLabel lblSearch = new JLabel("Search: ");
+        JLabel lblSearch = new JLabel("Search by: ");
+        String[] arrSearch = {"Username", "Rank", "Admin", "Allowance"};
+        JComboBox cmbSearch = new JComboBox(arrSearch);
+        JLabel lblSearchWhere = new JLabel("Where it equals: ");
+        JComboBox cmbRankSearch = new JComboBox(ranksArr);
+        String[] arrAdmin = {"True", "False"};
+        JComboBox cmbAdminSearch = new JComboBox(arrAdmin);
         JTextField txtSearch = new JTextField(16);
+        JButton btnSearchUsers = new JButton("Search");
         JTable tblUsers = new JTable();
+        JScrollPane jspaneUserTbl = new JScrollPane(tblUsers);
+        tblUsers.setEnabled(false);
+        JButton btnPasswordReset = new JButton("Reset Password");
+        JButton btnDeleteUser = new JButton("Delete User");
+        JButton btnConfirmEdits = new JButton("Confirm Changes");
 
         GridBagConstraints lblSearchGrid = new GridBagConstraints();
         lblSearchGrid.weightx = 1;
@@ -130,12 +146,68 @@ public class adminPage {
         lblSearchGrid.gridy = 0;
         editUserPanel.add(lblSearch, lblSearchGrid);
 
+        GridBagConstraints cmbSearchGrid = new GridBagConstraints();
+        cmbSearchGrid.weightx = 1;
+        cmbSearchGrid.gridx = 1;
+        cmbSearchGrid.gridy = 0;
+        editUserPanel.add(cmbSearch, cmbSearchGrid);
+
+        GridBagConstraints lblSearchWhereGrid = new GridBagConstraints();
+        lblSearchWhereGrid.weightx = 1;
+        lblSearchWhereGrid.gridx = 2;
+        lblSearchWhereGrid.gridy = 0;
+        editUserPanel.add(lblSearchWhere, lblSearchWhereGrid);
+
         GridBagConstraints txtSearchGrid = new GridBagConstraints();
         txtSearchGrid.weightx = 1;
-        lblSearchGrid.gridx = 1;
+        lblSearchGrid.gridx = 3;
         lblSearchGrid.gridy = 0;
         editUserPanel.add(txtSearch, txtSearchGrid);
 
+        GridBagConstraints cmbRankSearchGrid = new GridBagConstraints();
+        cmbRankSearchGrid.weightx = 1;
+        cmbRankSearchGrid.gridx = 3;
+        cmbRankSearchGrid.gridy = 0;
+        editUserPanel.add(cmbRankSearch, cmbRankSearchGrid);
+        cmbRankSearch.setVisible(false);
+
+        GridBagConstraints cmbAdminSearchGrid = new GridBagConstraints();
+        cmbAdminSearchGrid.weightx = 1;
+        cmbAdminSearchGrid.gridx = 3;
+        cmbAdminSearchGrid.gridy = 0;
+        editUserPanel.add(cmbAdminSearch, cmbAdminSearchGrid);
+        cmbAdminSearch.setVisible(false);
+
+        GridBagConstraints jspaneUsersGrid = new GridBagConstraints();
+        jspaneUsersGrid.weightx = 1;
+        jspaneUsersGrid.gridx = 0;
+        jspaneUsersGrid.gridy = 1;
+        jspaneUsersGrid.gridwidth = 4;
+        editUserPanel.add(jspaneUserTbl, jspaneUsersGrid);
+
+        GridBagConstraints btnSearchUsersGrid = new GridBagConstraints();
+        btnSearchUsersGrid.weightx = 1;
+        btnSearchUsersGrid.gridx = 0;
+        btnSearchUsersGrid.gridy = 2;
+        editUserPanel.add(btnSearchUsers, btnSearchUsersGrid);
+
+        GridBagConstraints btnPasswordResetGrid = new GridBagConstraints();
+        btnPasswordResetGrid.weightx = 1;
+        btnPasswordResetGrid.gridx = 1;
+        btnPasswordResetGrid.gridy = 2;
+        editUserPanel.add(btnPasswordReset, btnPasswordResetGrid);
+
+        GridBagConstraints btnDeleteUserGrid = new GridBagConstraints();
+        btnDeleteUserGrid.weightx = 1;
+        btnDeleteUserGrid.gridx = 2;
+        btnDeleteUserGrid.gridy = 2;
+        editUserPanel.add(btnDeleteUser, btnDeleteUserGrid);
+
+        GridBagConstraints btnConfirmEditsGrid = new GridBagConstraints();
+        btnConfirmEditsGrid.weightx = 1;
+        btnConfirmEditsGrid.gridx = 3;
+        btnConfirmEditsGrid.gridy = 2;
+        editUserPanel.add(btnConfirmEdits, btnConfirmEditsGrid);
         parentPanel.add(editUserPanel, "editUserPanel");
 
         cLayout.show(parentPanel, "manageRequestPanel");
@@ -183,6 +255,52 @@ public class adminPage {
                 addUserFunc(username, rank, admin, allowance);
             }
         });
+
+        btnSearchUsers.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchBy = cmbSearch.getSelectedItem().toString();
+                String value = "";
+                if (searchBy.equals("Username") || searchBy.equals("Allowance")) {
+                    value = txtSearch.getText();
+                }
+                if (searchBy.equals("Admin")) {
+                    value = cmbAdminSearch.getSelectedItem().toString();
+                    if (value.equals("True")) {
+                        value = "1";
+                    } else {
+                        value = "0";
+                    }
+                }
+                if (searchBy.equals("Rank")) {
+                    ranks selectedRank = allRanks.get(cmbRankSearch.getSelectedItem());
+                    value = Integer.toString(selectedRank.getRankID());
+                }
+                tblUsers.setModel(searchUserFunc(searchBy, value));
+
+            }
+        });
+
+        cmbSearch.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (cmbSearch.getSelectedItem().toString().equals("Admin")) {
+                    cmbAdminSearch.setVisible(true);
+                    cmbRankSearch.setVisible(false);
+                    txtSearch.setVisible(false);
+                }
+                if (cmbSearch.getSelectedItem().toString().equals("Rank")) {
+                    cmbRankSearch.setVisible(true);
+                    cmbAdminSearch.setVisible(false);
+                    txtSearch.setVisible(false);
+                }
+                if(cmbSearch.getSelectedItem().toString().equals("Username") || cmbSearch.getSelectedItem().toString().equals("Allowance")) {
+                    txtSearch.setVisible(true);
+                    cmbAdminSearch.setVisible(false);
+                    cmbRankSearch.setVisible(false);
+                }
+            }
+        });
     }
 
     private void addUserFunc(String username, int rank, int admin, int allowance) {
@@ -208,5 +326,15 @@ public class adminPage {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    private DefaultTableModel searchUserFunc(String searchBy, String value) {
+        DefaultTableModel userModel = null;
+        try {
+            userModel = dbquery.userSelect(searchBy, value);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return userModel;
     }
 }

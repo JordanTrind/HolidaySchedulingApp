@@ -362,4 +362,64 @@ class DatabaseQuerys {
             }
         }
     }
+
+    public DefaultTableModel userSelect(String searchBy, String value) throws SQLException {
+        DefaultTableModel model = new DefaultTableModel(new String[] {"ID", "Username", "Rank", "Admin","Allowance"}, 0);
+
+        Connection con = null;
+        PreparedStatement psUserSelect = null;
+        ResultSet resultsUserSelect = null;
+        String id, username, rank, admin, allowance = "";
+
+        try {
+            con = this.getConnection();
+
+            String sqlUSelectQuery = "";
+            switch (searchBy) {
+                case "Username":
+                    sqlUSelectQuery = "SELECT id, username, rank, admin, allowance FROM users WHERE username = ?;";
+                    break;
+                case "Rank":
+                    sqlUSelectQuery = "SELECT id, username, rank, admin, allowance FROM users WHERE rank = ?;";
+                    break;
+                case "Admin":
+                    sqlUSelectQuery = "SELECT id, username, rank, admin, allowance FROM users WHERE admin = ?;";
+                    break;
+                case "Allowance":
+                    sqlUSelectQuery = "SELECT id, username, rank, admin, allowance FROM users WHERE allowance = ?;";
+                    break;
+                default:
+                    sqlUSelectQuery = "SELECT id, username, rank, admin, allowance FROM users WHERE username = ?;";
+                    break;
+            }
+            psUserSelect = con.prepareStatement(sqlUSelectQuery);
+            psUserSelect.setString(1, value);
+            resultsUserSelect = psUserSelect.executeQuery();
+            while (resultsUserSelect.next()) {
+                id = resultsUserSelect.getString("id");
+                username = resultsUserSelect.getString("username");
+                rank = resultsUserSelect.getString("rank");
+                admin = resultsUserSelect.getString("admin");
+                allowance = resultsUserSelect.getString("allowance");
+                model.addRow(new Object[] {id, username, rank, admin, allowance});
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsUserSelect != null) {
+                resultsUserSelect.close();
+            }
+            if (psUserSelect != null) {
+                psUserSelect.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+
+        return model;
+    }
 }
