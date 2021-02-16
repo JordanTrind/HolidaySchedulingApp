@@ -215,12 +215,9 @@ class DatabaseQuerys {
         return model;
     }
 
-    public boolean userAdd(String username, int rank, int admin, int allowance) throws SQLException {
+    public boolean userAdd(String username, String password, int rank, int admin, int allowance) throws SQLException {
         Connection con = null;
         PreparedStatement psUserAdd = null;
-        passwordHandler pwDefault = new passwordHandler();
-        char[] defaultPass = {'C','h','a','n','g','e','M','e','1'};
-        String password = pwDefault.newPassword(defaultPass);
         int recordCounter = 0;
         Boolean resultAdd = false;
 

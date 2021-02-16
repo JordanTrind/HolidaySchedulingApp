@@ -290,6 +290,15 @@ public class adminPage {
             }
         });
 
+        btnPasswordReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = (String) (tblUsers.getValueAt(tblUsers.getSelectedRow(),0));
+                int id2 = Integer.parseInt(id);
+                sendPasswordResetFunc(id2);
+            }
+        });
+
         cmbSearch.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -326,7 +335,10 @@ public class adminPage {
         }
 
         try {
-            boolean result = dbquery.userAdd(username, rank, admin, allowance);
+            passwordHandler pwDefault = new passwordHandler();
+            char[] defaultPass = {'C','h','a','n','g','e','M','e','1'};
+            String password = pwDefault.newPassword(defaultPass);
+            boolean result = dbquery.userAdd(username, password, rank, admin, allowance);
             if (result) {
                 JOptionPane.showMessageDialog(null, "User added!", "Add User", JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -357,6 +369,25 @@ public class adminPage {
                 JOptionPane.showMessageDialog(null, "User deleted!", "Delete User", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, "Error Deleting User!", "Delete User", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void sendPasswordResetFunc (int id) {
+        if (id == userInst.getUserID()) {
+            JOptionPane.showMessageDialog(null, "Use the user page to change your own password!", "User Password Reset", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        try {
+            passwordHandler pwDefault = new passwordHandler();
+            char[] defaultPass = {'C','h','a','n','g','e','M','e','1'};
+            String password = pwDefault.newPassword(defaultPass);
+            if(dbquery.passwordUpdate(id, password)) {
+                JOptionPane.showMessageDialog(null, "Password reset to default: ChangeMe1", "User Password Reset", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error Resetting User Password!", "User Password Reset", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
