@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 public class adminPage {
     DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
+    user userInst = user.getInstance();
     HashMap<String, ranks> allRanks = new HashMap<>();
     public void adminView() {
         try {
@@ -135,7 +136,6 @@ public class adminPage {
         JButton btnSearchUsers = new JButton("Search");
         JTable tblUsers = new JTable();
         JScrollPane jspaneUserTbl = new JScrollPane(tblUsers);
-        tblUsers.setEnabled(false);
         JButton btnPasswordReset = new JButton("Reset Password");
         JButton btnDeleteUser = new JButton("Delete User");
         JButton btnConfirmEdits = new JButton("Confirm Changes");
@@ -281,6 +281,15 @@ public class adminPage {
             }
         });
 
+        btnDeleteUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = (String) (tblUsers.getValueAt(tblUsers.getSelectedRow(),0));
+                int id2 = Integer.parseInt(id);
+                deleteUserFunc(id2);
+            }
+        });
+
         cmbSearch.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -336,5 +345,21 @@ public class adminPage {
             throwables.printStackTrace();
         }
         return userModel;
+    }
+
+    private void deleteUserFunc (int id) {
+        if (id == userInst.getUserID()) {
+            JOptionPane.showMessageDialog(null, "You cannot delete yourself!", "Delete User", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        try {
+            if(dbquery.userDelete(id)) {
+                JOptionPane.showMessageDialog(null, "User deleted!", "Delete User", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error Deleting User!", "Delete User", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

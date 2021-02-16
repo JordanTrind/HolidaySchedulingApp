@@ -422,4 +422,34 @@ class DatabaseQuerys {
 
         return model;
     }
+
+    public boolean userDelete(int id) throws SQLException {
+        Connection con = null;
+        PreparedStatement psUserDelete = null;
+        int recordCounter = 0;
+        Boolean resultDelete = false;
+
+        try {
+            con = this.getConnection();
+            String sqlUserDelete = "DELETE FROM users WHERE id = ?;";
+            psUserDelete = con.prepareStatement(sqlUserDelete);
+            psUserDelete.setString(1, Integer.toString(id));
+            recordCounter = psUserDelete.executeUpdate();
+            if (recordCounter == 1) {
+                resultDelete = true;
+            } else {
+                resultDelete = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("Adding user failed!",e);
+        } finally {
+            if (psUserDelete != null) {
+                psUserDelete.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultDelete;
+    }
 }
