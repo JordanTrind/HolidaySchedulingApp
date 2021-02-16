@@ -85,7 +85,7 @@ public class loginPage {
                 char[] Password = txtPassword.getPassword();
 
                 //Uses method loginAction with supplied variables
-                if (loginAction(Username, Password)) {
+                if (loginActionFunc(Username, Password)) {
                     //Precuation change of label to ensure the user is aware, dispose of now not used frame
                     lblWelcome.setText("Login Successful, Please wait...");
                     frame.dispose();
@@ -108,7 +108,7 @@ public class loginPage {
         });
     }
 
-    private boolean loginAction(String Username, char[] Password) {
+    private boolean loginActionFunc(String Username, char[] Password) {
         //Default to false as user will not be admin majority of time
         boolean loginSuccess = false;
         try {

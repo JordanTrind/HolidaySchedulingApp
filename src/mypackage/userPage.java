@@ -243,34 +243,7 @@ public class userPage {
             public void actionPerformed(ActionEvent e) {
                 char[] firstPass = txtPassword1.getPassword();
                 char[] secondPass = txtPassword2.getPassword();
-                passwordHandler pCheck = new passwordHandler();
-
-                switch (pCheck.passwordReqCheck(firstPass, secondPass)) {
-                    case "passwordmatcherror":
-                        JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Error", JOptionPane.INFORMATION_MESSAGE);
-                        break;
-                    case "passwordreqerror":
-                        JOptionPane.showMessageDialog(null, "Passwords must be 8 digits long have an uppercase and lowercase letter and contain a number", "Password Error", JOptionPane.INFORMATION_MESSAGE);
-                        break;
-                    case "success":
-                        int id = userInst.getUserID();
-                        String newPass = pCheck.newPassword(firstPass);
-                        try {
-                            if (dbquery.passwordUpdate(id, newPass)) {
-
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Error changing password", "Password Error", JOptionPane.INFORMATION_MESSAGE);
-                            }
-                        } catch (Exception exec) {
-                            new IllegalStateException("Password update failed at Database Query", exec);
-                        }
-                        JOptionPane.showMessageDialog(null, "Password successfully changed", "Password Change Success", JOptionPane.INFORMATION_MESSAGE);
-                        break;
-                    default:
-                        JOptionPane.showMessageDialog(null, "Error changing password", "Password Error", JOptionPane.INFORMATION_MESSAGE);
-                        break;
-                }
-
+                passwordChangeFunc(firstPass, secondPass);
                 txtPassword1.setText("");
                 txtPassword2.setText("");
             }
@@ -279,48 +252,79 @@ public class userPage {
         btnRHol.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
-                Date sDate = new Date();
-                Date eDate = new Date();
-                Date cDate = new Date();
                 String sDateStr = startDate.getJFormattedTextField().getText();
                 String eDateStr = endDate.getJFormattedTextField().getText();
-                String cDateStr = dateForm.format(cDate);
-                int allowance = userInst.getUserAllowance();
-
-                try {
-                    sDate = dateForm.parse(sDateStr);
-                    eDate = dateForm.parse(eDateStr);
-                } catch (ParseException parseException) {
-                    parseException.printStackTrace();
-                }
-                int dateDiff = (int) ((eDate.getTime() - sDate.getTime()) / (1000 * 60 * 60 * 24));
-                System.out.println(sDate);
-                int newAllowance = (int) (allowance - (dateDiff + 1));
-                System.out.println(newAllowance);
-
-                if ((newAllowance >= 0) && (sDate.after(cDate)) && (eDate.after(cDate)) && (eDate.after(sDate) || (sDate.compareTo(eDate) == 0))) {
-                    try {
-                        if (dbquery.holidayAdd(userInst.getUserID(), cDateStr, sDateStr, eDateStr)) {
-                            JOptionPane.showMessageDialog(null, "Requested holiday has been entered", "Holiday Accepted", JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Error requesting holiday try again!", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-                    try {
-                        if (dbquery.allowanceUpdate(userInst.getUserID(), newAllowance)) {
-                            userInst.setUserAllowance(newAllowance);
-                            lblAllowance.setText("Holiday Allowance: " + userInst.getUserAllowance());
-                        }
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error requesting holiday please check holiday allowance and dates entered!", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
-                }
+                requestHolidayFunc(sDateStr, eDateStr);
+                lblAllowance.setText("Holiday Allowance: " + userInst.getUserAllowance());
             }
         });
+    }
+
+    private void passwordChangeFunc(char[] firstPass, char[] secondPass) {
+        passwordHandler pCheck = new passwordHandler();
+        switch (pCheck.passwordReqCheck(firstPass, secondPass)) {
+            case "passwordmatcherror":
+                JOptionPane.showMessageDialog(null, "Passwords do not match", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                break;
+            case "passwordreqerror":
+                JOptionPane.showMessageDialog(null, "Passwords must be 8 digits long have an uppercase and lowercase letter and contain a number", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                break;
+            case "success":
+                int id = userInst.getUserID();
+                String newPass = pCheck.newPassword(firstPass);
+                try {
+                    if (dbquery.passwordUpdate(id, newPass)) {
+
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error changing password", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (Exception exec) {
+                    new IllegalStateException("Password update failed at Database Query", exec);
+                }
+                JOptionPane.showMessageDialog(null, "Password successfully changed", "Password Change Success", JOptionPane.INFORMATION_MESSAGE);
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Error changing password", "Password Error", JOptionPane.INFORMATION_MESSAGE);
+                break;
+        }
+    }
+
+    private void requestHolidayFunc(String sDateStr, String eDateStr) {
+        SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
+        Date sDate = new Date();
+        Date eDate = new Date();
+        Date cDate = new Date();
+        String cDateStr = dateForm.format(cDate);
+        int allowance = userInst.getUserAllowance();
+
+        try {
+            sDate = dateForm.parse(sDateStr);
+            eDate = dateForm.parse(eDateStr);
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
+        }
+        int dateDiff = (int) ((eDate.getTime() - sDate.getTime()) / (1000 * 60 * 60 * 24));
+        int newAllowance = (int) (allowance - (dateDiff + 1));
+
+        if ((newAllowance >= 0) && (sDate.after(cDate)) && (eDate.after(cDate)) && (eDate.after(sDate) || (sDate.compareTo(eDate) == 0))) {
+            try {
+                if (dbquery.holidayAdd(userInst.getUserID(), cDateStr, sDateStr, eDateStr)) {
+                    JOptionPane.showMessageDialog(null, "Requested holiday has been entered", "Holiday Accepted", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error requesting holiday try again!", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            try {
+                if (dbquery.allowanceUpdate(userInst.getUserID(), newAllowance)) {
+                    userInst.setUserAllowance(newAllowance);
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Error requesting holiday please check holiday allowance and dates entered!", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }
