@@ -133,12 +133,20 @@ public class adminPage {
         String[] arrAdmin = {"True", "False"};
         JComboBox cmbAdminSearch = new JComboBox(arrAdmin);
         JTextField txtSearch = new JTextField(16);
+        JSpinner jsUSearch = new JSpinner(new SpinnerNumberModel(28, 0, 99, 1));
         JButton btnSearchUsers = new JButton("Search");
+        JLabel lblUChange = new JLabel("Change: ");
+        JComboBox cmbUChange = new JComboBox(arrSearch);
+        JLabel lblUChangeWhere = new JLabel("To: ");
+        JComboBox cmbAdminChange = new JComboBox(arrAdmin);
+        JComboBox cmbRankChange = new JComboBox(ranksArr);
+        JTextField txtUTextChange = new JTextField(16);
+        JSpinner jsUChange = new JSpinner(new SpinnerNumberModel(28, 0, 99, 1));
         JTable tblUsers = new JTable();
         JScrollPane jspaneUserTbl = new JScrollPane(tblUsers);
         JButton btnPasswordReset = new JButton("Reset Password");
         JButton btnDeleteUser = new JButton("Delete User");
-        JButton btnConfirmEdits = new JButton("Confirm Changes");
+        JButton btnConfirmEdits = new JButton("Confirm Change");
 
         GridBagConstraints lblSearchGrid = new GridBagConstraints();
         lblSearchGrid.weightx = 1;
@@ -178,35 +186,87 @@ public class adminPage {
         editUserPanel.add(cmbAdminSearch, cmbAdminSearchGrid);
         cmbAdminSearch.setVisible(false);
 
+        GridBagConstraints jsUSearchGrid = new GridBagConstraints();
+        jsUSearchGrid.weightx = 1;
+        jsUSearchGrid.gridx = 3;
+        jsUSearchGrid.gridy = 0;
+        editUserPanel.add(jsUSearch, jsUSearchGrid);
+        jsUSearch.setVisible(false);
+
+        GridBagConstraints lblUChangeGrid = new GridBagConstraints();
+        lblUChangeGrid.weightx = 1;
+        lblUChangeGrid.gridx = 0;
+        lblUChangeGrid.gridy = 1;
+        editUserPanel.add(lblUChange, lblUChangeGrid);
+
+        GridBagConstraints cmbUChangeGrid = new GridBagConstraints();
+        cmbUChangeGrid.weightx = 1;
+        cmbUChangeGrid.gridx = 1;
+        cmbUChangeGrid.gridy = 1;
+        editUserPanel.add(cmbUChange, cmbUChangeGrid);
+
+        GridBagConstraints lblUChangeWhereGrid = new GridBagConstraints();
+        lblUChangeWhereGrid.weightx = 1;
+        lblUChangeWhereGrid.gridx = 2;
+        lblUChangeWhereGrid.gridy = 1;
+        editUserPanel.add(lblUChangeWhere, lblUChangeWhereGrid);
+
+        GridBagConstraints txtUTextChangeGrid = new GridBagConstraints();
+        txtUTextChangeGrid.weightx = 1;
+        txtUTextChangeGrid.gridx = 3;
+        txtUTextChangeGrid.gridy = 1;
+        editUserPanel.add(txtUTextChange, txtUTextChangeGrid);
+
+        GridBagConstraints cmbRankChangeGrid = new GridBagConstraints();
+        cmbRankChangeGrid.weightx = 1;
+        cmbRankChangeGrid.gridx = 3;
+        cmbRankChangeGrid.gridy = 1;
+        editUserPanel.add(cmbRankChange, cmbRankChangeGrid);
+        cmbRankChange.setVisible(false);
+
+        GridBagConstraints cmbAdminChangeGrid = new GridBagConstraints();
+        cmbAdminChangeGrid.weightx = 1;
+        cmbAdminChangeGrid.gridx = 3;
+        cmbAdminChangeGrid.gridy = 1;
+        editUserPanel.add(cmbAdminChange, cmbAdminChangeGrid);
+        cmbAdminChange.setVisible(false);
+
+        GridBagConstraints jsUChangeGrid = new GridBagConstraints();
+        jsUChangeGrid.weightx = 1;
+        jsUChangeGrid.gridx = 3;
+        jsUChangeGrid.gridy = 1;
+        editUserPanel.add(jsUChange, jsUChangeGrid);
+        jsUSearch.setVisible(false);
+
         GridBagConstraints jspaneUsersGrid = new GridBagConstraints();
         jspaneUsersGrid.weightx = 1;
         jspaneUsersGrid.gridx = 0;
-        jspaneUsersGrid.gridy = 1;
+        jspaneUsersGrid.gridy = 2;
         jspaneUsersGrid.gridwidth = 4;
         editUserPanel.add(jspaneUserTbl, jspaneUsersGrid);
 
         GridBagConstraints btnSearchUsersGrid = new GridBagConstraints();
         btnSearchUsersGrid.weightx = 1;
         btnSearchUsersGrid.gridx = 0;
-        btnSearchUsersGrid.gridy = 2;
+        btnSearchUsersGrid.gridy = 3;
         editUserPanel.add(btnSearchUsers, btnSearchUsersGrid);
 
         GridBagConstraints btnPasswordResetGrid = new GridBagConstraints();
         btnPasswordResetGrid.weightx = 1;
         btnPasswordResetGrid.gridx = 1;
-        btnPasswordResetGrid.gridy = 2;
+        btnPasswordResetGrid.gridy = 3;
         editUserPanel.add(btnPasswordReset, btnPasswordResetGrid);
 
         GridBagConstraints btnDeleteUserGrid = new GridBagConstraints();
         btnDeleteUserGrid.weightx = 1;
         btnDeleteUserGrid.gridx = 2;
-        btnDeleteUserGrid.gridy = 2;
+        btnDeleteUserGrid.gridy = 3;
         editUserPanel.add(btnDeleteUser, btnDeleteUserGrid);
 
         GridBagConstraints btnConfirmEditsGrid = new GridBagConstraints();
         btnConfirmEditsGrid.weightx = 1;
         btnConfirmEditsGrid.gridx = 3;
-        btnConfirmEditsGrid.gridy = 2;
+        btnConfirmEditsGrid.gridy = 3;
         editUserPanel.add(btnConfirmEdits, btnConfirmEditsGrid);
         parentPanel.add(editUserPanel, "editUserPanel");
 
@@ -261,8 +321,11 @@ public class adminPage {
             public void actionPerformed(ActionEvent e) {
                 String searchBy = cmbSearch.getSelectedItem().toString();
                 String value = "";
-                if (searchBy.equals("Username") || searchBy.equals("Allowance")) {
+                if (searchBy.equals("Username")) {
                     value = txtSearch.getText();
+                }
+                if (searchBy.equals("Allowance")) {
+                    value = jsUSearch.getValue().toString();
                 }
                 if (searchBy.equals("Admin")) {
                     value = cmbAdminSearch.getSelectedItem().toString();
@@ -299,6 +362,65 @@ public class adminPage {
             }
         });
 
+        btnConfirmEdits.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String changeBy = cmbUChange.getSelectedItem().toString();
+                String value = "";
+                if (changeBy.equals("Username")) {
+                    value = txtUTextChange.getText();
+                }
+                if (changeBy.equals("Allowance")) {
+                    value = jsUChange.getValue().toString();
+                }
+                if (changeBy.equals("Admin")) {
+                    value = cmbAdminChange.getSelectedItem().toString();
+                    if (value.equals("True")) {
+                        value = "1";
+                    } else {
+                        value = "0";
+                    }
+                }
+                if (changeBy.equals("Rank")) {
+                    ranks selectedRank = allRanks.get(cmbRankChange.getSelectedItem());
+                    value = Integer.toString(selectedRank.getRankID());
+                }
+                String id = (String) (tblUsers.getValueAt(tblUsers.getSelectedRow(),0));
+                int id2 = Integer.parseInt(id);
+                editUserFunc(id2, changeBy, value);
+            }
+        });
+
+        cmbUChange.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (cmbUChange.getSelectedItem().toString().equals("Admin")) {
+                    cmbAdminChange.setVisible(true);
+                    cmbRankChange.setVisible(false);
+                    txtUTextChange.setVisible(false);
+                    jsUChange.setVisible(false);
+                }
+                if (cmbUChange.getSelectedItem().toString().equals("Rank")) {
+                    cmbRankChange.setVisible(true);
+                    cmbAdminChange.setVisible(false);
+                    txtUTextChange.setVisible(false);
+                    jsUChange.setVisible(false);
+                }
+                if(cmbUChange.getSelectedItem().toString().equals("Username")) {
+                    txtUTextChange.setVisible(true);
+                    cmbAdminChange.setVisible(false);
+                    cmbRankChange.setVisible(false);
+                    jsUChange.setVisible(false);
+                }
+                if(cmbUChange.getSelectedItem().toString().equals("Allowance")) {
+                    jsUChange.setVisible(true);
+                    txtUTextChange.setVisible(false);
+                    cmbAdminChange.setVisible(false);
+                    cmbRankChange.setVisible(false);
+                }
+            }
+        });
+
         cmbSearch.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -306,14 +428,23 @@ public class adminPage {
                     cmbAdminSearch.setVisible(true);
                     cmbRankSearch.setVisible(false);
                     txtSearch.setVisible(false);
+                    jsUSearch.setVisible(false);
                 }
                 if (cmbSearch.getSelectedItem().toString().equals("Rank")) {
                     cmbRankSearch.setVisible(true);
                     cmbAdminSearch.setVisible(false);
                     txtSearch.setVisible(false);
+                    jsUSearch.setVisible(false);
                 }
-                if(cmbSearch.getSelectedItem().toString().equals("Username") || cmbSearch.getSelectedItem().toString().equals("Allowance")) {
+                if(cmbSearch.getSelectedItem().toString().equals("Username")) {
                     txtSearch.setVisible(true);
+                    cmbAdminSearch.setVisible(false);
+                    cmbRankSearch.setVisible(false);
+                    jsUSearch.setVisible(false);
+                }
+                if(cmbSearch.getSelectedItem().toString().equals("Allowance")) {
+                    jsUSearch.setVisible(true);
+                    txtSearch.setVisible(false);
                     cmbAdminSearch.setVisible(false);
                     cmbRankSearch.setVisible(false);
                 }
@@ -388,6 +519,36 @@ public class adminPage {
                 JOptionPane.showMessageDialog(null, "Password reset to default: ChangeMe1", "User Password Reset", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, "Error Resetting User Password!", "User Password Reset", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void editUserFunc(int id, String changeBy, String value) {
+        if (changeBy.equals("Allowance")) {
+            try {
+                Integer.parseInt(value);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Allowance value must be numeric", "User Update", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+        }
+        if (changeBy.equals("Username")) {
+            try {
+                if (dbquery.checkUserSelect(value)) {
+                    JOptionPane.showMessageDialog(null, "Username already exists!", "User Update", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        try {
+            if(dbquery.userUpdate(id, changeBy, value)) {
+                JOptionPane.showMessageDialog(null, "User value updated", "User Update", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error updating user details!", "User Update", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

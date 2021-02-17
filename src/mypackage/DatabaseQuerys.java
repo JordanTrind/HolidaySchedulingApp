@@ -449,4 +449,49 @@ class DatabaseQuerys {
         }
         return resultDelete;
     }
+
+    public boolean userUpdate(int id, String changeBy, String value) throws SQLException {
+        Connection con = null;
+        PreparedStatement psUserUpdate = null;
+        int recordCount = 0;
+        boolean resultUpdate = false;
+
+        try {
+            con = this.getConnection();
+            String sqlUUpdateQuery = "";
+            switch (changeBy) {
+                case "Username":
+                    sqlUUpdateQuery = "UPDATE users SET username = ? WHERE id = ?;";
+                    break;
+                case "Rank":
+                    sqlUUpdateQuery = "UPDATE users SET rank = ? WHERE id = ?;";
+                    break;
+                case "Admin":
+                    sqlUUpdateQuery = "UPDATE users SET admin = ? WHERE id = ?;";
+                    break;
+                case "Allowance":
+                    sqlUUpdateQuery = "UPDATE users SET allowance = ? WHERE id = ?;";
+                    break;
+            }
+            psUserUpdate = con.prepareStatement(sqlUUpdateQuery);
+            psUserUpdate.setString(1, value);
+            psUserUpdate.setString(2, Integer.toString(id));
+            recordCount = psUserUpdate.executeUpdate();
+            if (recordCount == 1) {
+                resultUpdate = true;
+            } else {
+                resultUpdate = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("User Update Failed",e);
+        } finally {
+            if (psUserUpdate != null) {
+                psUserUpdate.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultUpdate;
+    }
 }
