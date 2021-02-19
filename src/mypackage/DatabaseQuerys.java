@@ -494,4 +494,45 @@ class DatabaseQuerys {
         }
         return resultUpdate;
     }
+
+    public DefaultTableModel holidayNotRevSelect() throws SQLException {
+        DefaultTableModel model = new DefaultTableModel(new String[] {"User Id", "Holiday Start", "Holiday End", "Date Requested","Status"}, 0);
+
+        Connection con = null;
+        PreparedStatement psReviewHol = null;
+        ResultSet resultsReviewHol = null;
+        String userId, sDate, eDate, rDate, aDate, status = "";
+
+        try {
+            con = this.getConnection();
+            String sqlReviewHolidayQuery = "SELECT user_id, holiday_start, holiday_end, date_requested, status FROM holidays WHERE status = 'Not Reviewed';";
+            psReviewHol = con.prepareStatement(sqlReviewHolidayQuery);
+            resultsReviewHol = psReviewHol.executeQuery();
+            while (resultsReviewHol.next()) {
+                userId = resultsReviewHol.getString("user_id");
+                sDate = resultsReviewHol.getString("holiday_start");
+                eDate = resultsReviewHol.getString("holiday_end");
+                rDate = resultsReviewHol.getString("date_requested");
+                status = resultsReviewHol.getString("status");
+                model.addRow(new Object[] {userId, sDate, eDate, rDate, status});
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsReviewHol != null) {
+                resultsReviewHol.close();
+            }
+            if (psReviewHol != null) {
+                psReviewHol.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+
+        return model;
+    }
 }

@@ -273,6 +273,13 @@ public class adminPage {
         JPanel manageRequestPanel = new JPanel(new GridBagLayout());
         JTable tblRequests = new JTable();
         JScrollPane jspaneRequests = new JScrollPane(tblRequests);
+        DefaultTableModel tblHolModel = null;
+        try {
+            tblHolModel = dbquery.holidayNotRevSelect();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        tblRequests.setModel(tblHolModel);
         JButton btnAccept = new JButton("Accept");
         JButton btnDeny = new JButton("Deny");
 
