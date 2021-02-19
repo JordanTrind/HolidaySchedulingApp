@@ -270,6 +270,32 @@ public class adminPage {
         editUserPanel.add(btnConfirmEdits, btnConfirmEditsGrid);
         parentPanel.add(editUserPanel, "editUserPanel");
 
+        JPanel manageRequestPanel = new JPanel(new GridBagLayout());
+        JTable tblRequests = new JTable();
+        JScrollPane jspaneRequests = new JScrollPane(tblRequests);
+        JButton btnAccept = new JButton("Accept");
+        JButton btnDeny = new JButton("Deny");
+
+        GridBagConstraints jspaneRequestsGrid = new GridBagConstraints();
+        jspaneRequestsGrid.weightx = 1;
+        jspaneRequestsGrid.gridx = 0;
+        jspaneRequestsGrid.gridy = 0;
+        jspaneRequestsGrid.gridwidth = 2;
+        manageRequestPanel.add(jspaneRequests, jspaneRequestsGrid);
+
+        GridBagConstraints btnAcceptGrid = new GridBagConstraints();
+        btnAcceptGrid.weightx = 1;
+        btnAcceptGrid.gridx = 0;
+        btnAcceptGrid.gridy = 1;
+        manageRequestPanel.add(btnAccept, btnAcceptGrid);
+
+        GridBagConstraints btnDenyGrid = new GridBagConstraints();
+        btnDenyGrid.weightx = 1;
+        btnDenyGrid.gridx = 1;
+        btnDenyGrid.gridy = 1;
+        manageRequestPanel.add(btnDeny, btnDenyGrid);
+        parentPanel.add(manageRequestPanel, "manageRequestPanel");
+
         cLayout.show(parentPanel, "manageRequestPanel");
         aFrame.setVisible(true);
 
@@ -281,6 +307,11 @@ public class adminPage {
         editUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "editUserPanel"); }
+        });
+
+        manageRequests.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "manageRequestPanel"); }
         });
 
         viewUserPage.addActionListener(new ActionListener() {
