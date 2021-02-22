@@ -400,7 +400,7 @@ class DatabaseQuerys {
         Connection con = null;
         PreparedStatement psUserSelect = null;
         ResultSet resultsUserSelect = null;
-        String id, username, rank, admin, allowance = "";
+        String id, username, rankid, rank, adminInt, admin, allowance = "";
 
         try {
             con = this.getConnection();
@@ -429,8 +429,14 @@ class DatabaseQuerys {
             while (resultsUserSelect.next()) {
                 id = resultsUserSelect.getString("id");
                 username = resultsUserSelect.getString("username");
-                rank = resultsUserSelect.getString("rank");
-                admin = resultsUserSelect.getString("admin");
+                rankid = resultsUserSelect.getString("rank");
+                rank = rankSelect(Integer.parseInt(rankid));
+                adminInt = resultsUserSelect.getString("admin");
+                if (adminInt.equals("1")) {
+                    admin = "True";
+                } else {
+                    admin = "False";
+                }
                 allowance = resultsUserSelect.getString("allowance");
                 model.addRow(new Object[] {id, username, rank, admin, allowance});
             }
