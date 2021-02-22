@@ -21,6 +21,40 @@ class DatabaseQuerys {
         return conn;
     }
 
+    private String usernameSelect(String id) throws SQLException {
+        Connection con = null;
+        PreparedStatement psUsernameSelect = null;
+        ResultSet resultsUsernameSelect = null;
+        String username = "";
+
+        try {
+            con = this.getConnection();
+            String sqlUsernameSelectQuery = "";
+            sqlUsernameSelectQuery = "SELECT username FROM users WHERE id = ?;";
+            psUsernameSelect = con.prepareStatement(sqlUsernameSelectQuery);
+            psUsernameSelect.setString(1, id);
+            resultsUsernameSelect = psUsernameSelect.executeQuery();
+            while (resultsUsernameSelect.next()) {
+                username = resultsUsernameSelect.getString("username");
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsUsernameSelect != null) {
+                resultsUsernameSelect.close();
+            }
+            if (psUsernameSelect != null) {
+                psUsernameSelect.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return username;
+    }
+
     public boolean loginSelect(String username, char[] password) throws SQLException {
         user newUser = user.getInstance();
         Connection con = null;
@@ -496,25 +530,27 @@ class DatabaseQuerys {
     }
 
     public DefaultTableModel holidayNotRevSelect() throws SQLException {
-        DefaultTableModel model = new DefaultTableModel(new String[] {"User Id", "Holiday Start", "Holiday End", "Date Requested","Status"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[] {"ID", "Username", "Holiday Start", "Holiday End", "Date Requested","Status"}, 0);
 
         Connection con = null;
         PreparedStatement psReviewHol = null;
         ResultSet resultsReviewHol = null;
-        String userId, sDate, eDate, rDate, aDate, status = "";
+        String id, userId, username, sDate, eDate, rDate, aDate, status = "";
 
         try {
             con = this.getConnection();
-            String sqlReviewHolidayQuery = "SELECT user_id, holiday_start, holiday_end, date_requested, status FROM holidays WHERE status = 'Not Reviewed';";
+            String sqlReviewHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, status FROM holidays WHERE status = 'Not Reviewed';";
             psReviewHol = con.prepareStatement(sqlReviewHolidayQuery);
             resultsReviewHol = psReviewHol.executeQuery();
             while (resultsReviewHol.next()) {
+                id = resultsReviewHol.getString("id");
                 userId = resultsReviewHol.getString("user_id");
+                username = usernameSelect(userId);
                 sDate = resultsReviewHol.getString("holiday_start");
                 eDate = resultsReviewHol.getString("holiday_end");
                 rDate = resultsReviewHol.getString("date_requested");
                 status = resultsReviewHol.getString("status");
-                model.addRow(new Object[] {userId, sDate, eDate, rDate, status});
+                model.addRow(new Object[] {id, username, sDate, eDate, rDate, status});
             }
 
         } catch (Exception e) {
@@ -532,7 +568,39 @@ class DatabaseQuerys {
                 con.close();
             }
         }
-
         return model;
+    }
+
+    public boolean holidayUpdate(String id, String cDate, String value) throws SQLException {
+        Connection con = null;
+        PreparedStatement psHolidayUpdate = null;
+        int recordCount = 0;
+        boolean resultUpdate = false;
+
+        try {
+            con = this.getConnection();
+            String sqlHolidayUpdateQuery = "";
+            sqlHolidayUpdateQuery = "UPDATE holidays SET approval_date = ? , status = ? WHERE id = ?;";
+            psHolidayUpdate = con.prepareStatement(sqlHolidayUpdateQuery);
+            psHolidayUpdate.setString(1, cDate);
+            psHolidayUpdate.setString(2, value);
+            psHolidayUpdate.setString(3, id);
+            recordCount = psHolidayUpdate.executeUpdate();
+            if (recordCount == 1) {
+                resultUpdate = true;
+            } else {
+                resultUpdate = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("User Update Failed",e);
+        } finally {
+            if (psHolidayUpdate != null) {
+                psHolidayUpdate.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultUpdate;
     }
 }

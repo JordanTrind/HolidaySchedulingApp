@@ -9,8 +9,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Array;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class adminPage {
@@ -429,6 +431,24 @@ public class adminPage {
             }
         });
 
+        btnAccept.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
+                String value = "Accepted";
+                tblRequests.setModel(acceptDenyHolidayFunc(id, value));
+            }
+        });
+
+        btnDeny.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
+                String value = "Rejected";
+                tblRequests.setModel(acceptDenyHolidayFunc(id, value));
+            }
+        });
+
         cmbUChange.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -591,5 +611,19 @@ public class adminPage {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    private DefaultTableModel acceptDenyHolidayFunc(String id, String value) {
+        DefaultTableModel holModel = null;
+        SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
+        Date cDate = new Date();
+        String cDateStr = dateForm.format(cDate);
+        try {
+            dbquery.holidayUpdate(id, cDateStr, value);
+            holModel = dbquery.holidayNotRevSelect();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return holModel;
     }
 }
