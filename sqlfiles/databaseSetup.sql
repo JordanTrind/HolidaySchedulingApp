@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `holidays` (
   PRIMARY KEY (`id`),
   KEY `FK_holidays_users` (`user_id`),
   CONSTRAINT `FK_holidays_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 -- Dumping structure for table holidayschedulingapp.ranks
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `ranks` (
   `rank` varchar(50) DEFAULT NULL,
   `importance` enum('1','2','3','4','5','6','7','8','9','10') DEFAULT '10',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 -- Dumping structure for table holidayschedulingapp.users
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   KEY `FK_users_ranks` (`rank`),
   CONSTRAINT `FK_users_ranks` FOREIGN KEY (`rank`) REFERENCES `ranks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

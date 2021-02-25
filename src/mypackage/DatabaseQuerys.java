@@ -51,8 +51,42 @@ class DatabaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return username;
         }
-        return username;
+    }
+
+    private String userRankSelect(String id) throws SQLException {
+        Connection con = null;
+        PreparedStatement psUserrankSelect = null;
+        ResultSet resultsUserrankSelect = null;
+        String rank = "";
+
+        try {
+            con = this.getConnection();
+            String sqlUserrankSelectQuery = "";
+            sqlUserrankSelectQuery = "SELECT rank FROM users WHERE id = ?;";
+            psUserrankSelect = con.prepareStatement(sqlUserrankSelectQuery);
+            psUserrankSelect.setString(1, id);
+            resultsUserrankSelect = psUserrankSelect.executeQuery();
+            while (resultsUserrankSelect.next()) {
+                rank = resultsUserrankSelect.getString("rank");
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsUserrankSelect != null) {
+                resultsUserrankSelect.close();
+            }
+            if (psUserrankSelect != null) {
+                psUserrankSelect.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+            return rank;
+        }
     }
 
     public boolean loginSelect(String username, char[] password) throws SQLException {
@@ -575,6 +609,49 @@ class DatabaseQuerys {
             }
         }
         return model;
+    }
+
+    public HashMap<Integer, holiday> holidaySelectApproved() throws  SQLException {
+        HashMap<Integer, holiday> approvedHolidays = new HashMap<>();
+        Connection con = null;
+        PreparedStatement psApproveHol = null;
+        ResultSet resultsApproveHol = null;
+        String id, userId, userRank, sDate, eDate, rDate, aDate, status = "";
+
+        try {
+            con = this.getConnection();
+            String sqlApproveHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, approval_date, status FROM holidays WHERE status = 'Accepted';";
+            psApproveHol = con.prepareStatement(sqlApproveHolidayQuery);
+            resultsApproveHol = psApproveHol.executeQuery();
+            while (resultsApproveHol.next()) {
+                id = resultsApproveHol.getString("id");
+                userId = resultsApproveHol.getString("user_id");
+                userRank = userRankSelect(userId);
+                sDate = resultsApproveHol.getString("holiday_start");
+                eDate = resultsApproveHol.getString("holiday_end");
+                rDate = resultsApproveHol.getString("date_requested");
+                aDate = resultsApproveHol.getString("approval_date");
+                status = resultsApproveHol.getString("status");
+                holiday holidayEntry = new holiday(Integer.parseInt(id), Integer.parseInt(userId), Integer.parseInt(userRank), rDate, sDate, eDate, aDate, status);
+                approvedHolidays.put(Integer.parseInt(id), holidayEntry);
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsApproveHol != null) {
+                resultsApproveHol.close();
+            }
+            if (psApproveHol != null) {
+                psApproveHol.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return approvedHolidays;
     }
 
     public boolean holidayUpdate(String id, String cDate, String value) throws SQLException {

@@ -16,7 +16,7 @@ public class loginPage {
 
     //Gets two instances needed from the user and databaseQuerys classes
     private user userInst = user.getInstance();
-    private DatabaseQuerys dbquery =DatabaseQuerys.getDatabaseQuerysInst();
+    private DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
 
     public void loginView() {
         //Sets up the JFrame
