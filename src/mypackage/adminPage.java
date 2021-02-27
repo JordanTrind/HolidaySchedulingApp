@@ -435,8 +435,11 @@ public class adminPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String id = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
+                String userid = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),1));
+                String sDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
+                String eDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
                 String value = "Accepted";
-                tblRequests.setModel(acceptDenyHolidayFunc(id, value));
+                tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value));
             }
         });
 
@@ -444,8 +447,11 @@ public class adminPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String id = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
+                String userid = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),1));
+                String sDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
+                String eDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
                 String value = "Rejected";
-                tblRequests.setModel(acceptDenyHolidayFunc(id, value));
+                tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value));
             }
         });
 
@@ -613,13 +619,29 @@ public class adminPage {
         }
     }
 
-    private DefaultTableModel acceptDenyHolidayFunc(String id, String value) {
+    private DefaultTableModel acceptDenyHolidayFunc(String id, String userid, String sDate, String eDate, String value) {
+        constraints constraint = new constraints();
+        Boolean executeUpdate = true;
         DefaultTableModel holModel = null;
         SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
         Date cDate = new Date();
         String cDateStr = dateForm.format(cDate);
+        int rankId = -1;
+        if (value.equals("Accepted")) {
+            try {
+                rankId = Integer.parseInt(dbquery.userRankSelect(userid));
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            if (constraint.staffCheck(rankId, sDate, eDate) == false) {
+                JOptionPane.showMessageDialog(null, "There are too many staff off at this rank cannot approve holiday", "Holiday Requests", JOptionPane.INFORMATION_MESSAGE);
+                executeUpdate = false;
+            }
+        }
         try {
-            dbquery.holidayUpdate(id, cDateStr, value);
+            if (executeUpdate) {
+                dbquery.holidayUpdate(id, cDateStr, value);
+            }
             holModel = dbquery.holidayNotRevSelect();
         } catch (SQLException throwables) {
             throwables.printStackTrace();

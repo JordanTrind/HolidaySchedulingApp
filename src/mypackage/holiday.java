@@ -32,4 +32,8 @@ public class holiday {
     public int getUserRank() {
         return userRank;
     }
+
+    public String getHolidayS() { return holidayS; }
+
+    public String getHolidayE() { return holidayE; }
 }

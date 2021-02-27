@@ -55,7 +55,7 @@ class DatabaseQuerys {
         }
     }
 
-    private String userRankSelect(String id) throws SQLException {
+    public String userRankSelect(String id) throws SQLException {
         Connection con = null;
         PreparedStatement psUserrankSelect = null;
         ResultSet resultsUserrankSelect = null;
@@ -570,7 +570,7 @@ class DatabaseQuerys {
     }
 
     public DefaultTableModel holidayNotRevSelect() throws SQLException {
-        DefaultTableModel model = new DefaultTableModel(new String[] {"ID", "Username", "Holiday Start", "Holiday End", "Date Requested","Status"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[] {"ID", "User ID", "Username", "Holiday Start", "Holiday End", "Date Requested","Status"}, 0);
 
         Connection con = null;
         PreparedStatement psReviewHol = null;
@@ -590,7 +590,7 @@ class DatabaseQuerys {
                 eDate = resultsReviewHol.getString("holiday_end");
                 rDate = resultsReviewHol.getString("date_requested");
                 status = resultsReviewHol.getString("status");
-                model.addRow(new Object[] {id, username, sDate, eDate, rDate, status});
+                model.addRow(new Object[] {id, userId, username, sDate, eDate, rDate, status});
             }
 
         } catch (Exception e) {
@@ -675,7 +675,7 @@ class DatabaseQuerys {
                 resultUpdate = false;
             }
         } catch(Exception e) {
-            throw new IllegalStateException("User Update Failed",e);
+            throw new IllegalStateException("Holiday Update Failed",e);
         } finally {
             if (psHolidayUpdate != null) {
                 psHolidayUpdate.close();
@@ -685,5 +685,36 @@ class DatabaseQuerys {
             }
         }
         return resultUpdate;
+    }
+
+    public int countTotalAtRank(int rank) throws SQLException {
+        Connection con = null;
+        PreparedStatement psRankCount = null;
+        int count = 0;
+        ResultSet resultsRankCount = null;
+
+        try {
+            con = this.getConnection();
+            String sqlRankCountQuery = "";
+            sqlRankCountQuery = "SELECT COUNT(*) FROM users WHERE rank = ?;";
+            psRankCount = con.prepareStatement(sqlRankCountQuery);
+            psRankCount.setString(1, Integer.toString(rank));
+            resultsRankCount = psRankCount.executeQuery();
+            resultsRankCount.next();
+            count = resultsRankCount.getInt(1);
+        } catch(Exception e) {
+            throw new IllegalStateException("Rank Count Failed",e);
+        } finally {
+            if (resultsRankCount != null) {
+                resultsRankCount.close();
+            }
+            if (psRankCount != null) {
+                psRankCount.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return count;
     }
 }
