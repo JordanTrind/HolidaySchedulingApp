@@ -15,6 +15,7 @@ public class user {
     private int userID;
     private int userAllowance;
     private String username;
+    private int userRankId;
     private String userRank;
     private boolean userAdmin;
 
@@ -47,6 +48,9 @@ public class user {
     public void setUserRank(String rank) {
         this.userRank = rank;
     }
+
+    public int getUserRankId() { return userRankId; }
+    public void setUserRankId(int rankId) { this.userRankId = rankId; }
 
     public boolean getUserAdmin() {
         return userAdmin;

@@ -120,6 +120,7 @@ class DatabaseQuerys {
                 newUser.setUserID(id);
                 newUser.setUsername(username);
                 newUser.setUserRank(rankSelect(rank));
+                newUser.setUserRankId(rank);
                 newUser.setUserAdmin(admin);
                 newUser.setUserAllowance(allowance);
                 resultOfQuery = true;

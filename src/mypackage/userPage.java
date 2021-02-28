@@ -291,6 +291,7 @@ public class userPage {
 
     private void requestHolidayFunc(String sDateStr, String eDateStr) {
         SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
+        constraints constraint = new constraints();
         Date sDate = new Date();
         Date eDate = new Date();
         Date cDate = new Date();
@@ -308,6 +309,10 @@ public class userPage {
 
         if ((newAllowance >= 0) && (sDate.after(cDate)) && (eDate.after(cDate)) && (eDate.after(sDate) || (sDate.compareTo(eDate) == 0))) {
             try {
+                if (constraint.staffCheck(userInst.getUserRankId(), sDateStr, eDateStr) == false) {
+                    JOptionPane.showMessageDialog(null, "There are too many staff off during this time period", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
                 if (dbquery.holidayAdd(userInst.getUserID(), cDateStr, sDateStr, eDateStr)) {
                     JOptionPane.showMessageDialog(null, "Requested holiday has been entered", "Holiday Accepted", JOptionPane.INFORMATION_MESSAGE);
                 } else {
