@@ -74,7 +74,6 @@ class DatabaseQuerys {
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
         }
-
         finally {
             if (resultsUserrankSelect != null) {
                 resultsUserrankSelect.close();
@@ -240,6 +239,40 @@ class DatabaseQuerys {
             }
         }
         return resultUpdate;
+    }
+
+    public int userAllowanceSelect(int id) throws SQLException {
+        Connection con = null;
+        PreparedStatement psUserAllowance = null;
+        ResultSet resultsUserAllowance = null;
+        int allowance = 0;
+
+        try {
+            con = this.getConnection();
+            String sqlUAllowanceQuery = "SELECT allowance FROM users WHERE id = ?;";
+            psUserAllowance = con.prepareStatement(sqlUAllowanceQuery);
+            psUserAllowance.setString(1, Integer.toString(id));
+            resultsUserAllowance = psUserAllowance.executeQuery();
+            while (resultsUserAllowance.next()) {
+                allowance = resultsUserAllowance.getInt("allowance");
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsUserAllowance != null) {
+                resultsUserAllowance.close();
+            }
+            if (psUserAllowance != null) {
+                psUserAllowance.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+
+        return allowance;
     }
 
     public DefaultTableModel userHolidaySelect(int id) throws SQLException {

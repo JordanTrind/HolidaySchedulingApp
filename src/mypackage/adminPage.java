@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Array;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -619,28 +620,45 @@ public class adminPage {
         }
     }
 
-    private DefaultTableModel acceptDenyHolidayFunc(String id, String userid, String sDate, String eDate, String value) {
+    private DefaultTableModel acceptDenyHolidayFunc(String id, String userid, String sDateStr, String eDateStr, String value) {
         constraints constraint = new constraints();
         Boolean executeUpdate = true;
         DefaultTableModel holModel = null;
         SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
         Date cDate = new Date();
+        Date sDate = new Date();
+        Date eDate = new Date();
         String cDateStr = dateForm.format(cDate);
         int rankId = -1;
+
         if (value.equals("Accepted")) {
             try {
                 rankId = Integer.parseInt(dbquery.userRankSelect(userid));
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            if (constraint.staffCheck(rankId, sDate, eDate) == false) {
-                JOptionPane.showMessageDialog(null, "There are too many staff off at this rank cannot approve holiday", "Holiday Requests", JOptionPane.INFORMATION_MESSAGE);
-                executeUpdate = false;
+            if (constraint.staffCheck(rankId, sDateStr, eDateStr) == false) {
+                int reply = JOptionPane.showConfirmDialog(null, "There are too many staff off during the time period shown, continuing may cause scheduling issues. Continue?", "Holiday Error", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.NO_OPTION) {
+                    executeUpdate = false;
+                }
             }
         }
         try {
             if (executeUpdate) {
                 dbquery.holidayUpdate(id, cDateStr, value);
+            }
+            if  (value.equals("Rejected")) {
+                int allowance = dbquery.userAllowanceSelect(Integer.parseInt(userid));
+                try {
+                    sDate = dateForm.parse(sDateStr);
+                    eDate = dateForm.parse(eDateStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                int dateDiff = (int) ((eDate.getTime() - sDate.getTime()) / (1000 * 60 * 60 * 24));
+                allowance += (dateDiff + 1);
+                dbquery.allowanceUpdate(Integer.parseInt(userid), allowance);
             }
             holModel = dbquery.holidayNotRevSelect();
         } catch (SQLException throwables) {
