@@ -28,24 +28,6 @@ public class constraints {
         HashMap<Integer, holiday>  approvedHolidays = new HashMap<>();
         int totalStaffForRank = 0;
         int totalRequired = 0;
-        switch (rank) {
-            case 1:
-                //Admin
-                totalRequired = 0;
-                break;
-            case 2:
-                //Worker
-                totalRequired = 70;
-                break;
-            case 3:
-                //Manager
-                totalRequired = 5;
-                break;
-            case 4:
-                //Trainer
-                totalRequired = 15;
-                break;
-        }
         try {
             sDate = dateForm.parse(sDateString);
             eDate = dateForm.parse(eDateString);
@@ -53,6 +35,7 @@ public class constraints {
             parseException.printStackTrace();
         }
         try {
+            totalRequired = dbquery.rankSelectAmount(rank);
             totalStaffForRank = dbquery.countTotalAtRank(rank);
             approvedHolidays = dbquery.holidaySelectApproved();
         } catch (SQLException throwables) {
@@ -83,7 +66,7 @@ public class constraints {
                 amountOfCounter++;
             }
         }
-        if ((totalStaffForRank - amountOfCounter) < totalRequired) {
+        if ((totalStaffForRank - amountOfCounter) <= totalRequired) {
             return false;
         } else {
             return true;

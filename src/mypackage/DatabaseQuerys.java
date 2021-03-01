@@ -118,7 +118,7 @@ class DatabaseQuerys {
             if ((id != -1) && (pwCheck.checkPassword(tempPassString, hashedPassword))) {
                 newUser.setUserID(id);
                 newUser.setUsername(username);
-                newUser.setUserRank(rankSelect(rank));
+                newUser.setUserRank(rankSelectName(rank));
                 newUser.setUserRankId(rank);
                 newUser.setUserAdmin(admin);
                 newUser.setUserAllowance(allowance);
@@ -317,6 +317,37 @@ class DatabaseQuerys {
         return model;
     }
 
+    public boolean rankAdd(String rankName, String rankAmount) throws SQLException {
+        Connection con = null;
+        PreparedStatement psRankAdd = null;
+        int recordCounter = 0;
+        Boolean resultAdd = false;
+
+        try {
+            con = this.getConnection();
+            String sqlRankAdd = "INSERT INTO ranks(rank, amount_needed)values(?,?);";
+            psRankAdd = con.prepareStatement(sqlRankAdd);
+            psRankAdd.setString(1, rankName);
+            psRankAdd.setString(2, rankAmount);
+            recordCounter = psRankAdd.executeUpdate();
+            if (recordCounter == 1) {
+                resultAdd = true;
+            } else {
+                resultAdd = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("Adding rank failed!",e);
+        } finally {
+            if (psRankAdd != null) {
+                psRankAdd.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultAdd;
+    }
+
     public boolean userAdd(String username, String password, int rank, int admin, int allowance) throws SQLException {
         Connection con = null;
         PreparedStatement psUserAdd = null;
@@ -351,7 +382,7 @@ class DatabaseQuerys {
         return resultAdd;
     }
 
-    public String rankSelect(int id) throws SQLException {
+    private String rankSelectName(int id) throws SQLException {
         Connection con = null;
         PreparedStatement psRank = null;
         ResultSet resultsRank = null;
@@ -385,6 +416,40 @@ class DatabaseQuerys {
         return rank;
     }
 
+    public int rankSelectAmount(int id) throws SQLException {
+        Connection con = null;
+        PreparedStatement psRank = null;
+        ResultSet resultsRank = null;
+        int rank = 0;
+
+        try {
+            con = this.getConnection();
+            String sqlRankQuery = "SELECT amount_needed FROM ranks WHERE id = ?;";
+            psRank = con.prepareStatement(sqlRankQuery);
+            psRank.setString(1, Integer.toString(id));
+            resultsRank = psRank.executeQuery();
+            while (resultsRank.next()) {
+                rank = Integer.parseInt(resultsRank.getString("amount_needed"));
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsRank != null) {
+                resultsRank.close();
+            }
+            if (psRank != null) {
+                psRank.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return rank;
+    }
+
     public HashMap<String, ranks> rankSelectAll() throws SQLException {
         HashMap<String, ranks> ranksAll = new HashMap<>();
         Connection con = null;
@@ -392,18 +457,18 @@ class DatabaseQuerys {
         ResultSet resultsRankAll = null;
         int rankId = -1;
         String rankName = "";
-        int importance = -1;
+        int amountNeeded = -1;
 
         try {
             con = this.getConnection();
-            String sqlRankQuery = "SELECT id, rank, importance FROM ranks;";
+            String sqlRankQuery = "SELECT id, rank, amount_needed FROM ranks;";
             psRankAll = con.prepareStatement(sqlRankQuery);
             resultsRankAll = psRankAll.executeQuery();
             while (resultsRankAll.next()) {
                 rankId = resultsRankAll.getInt("id");
                 rankName = resultsRankAll.getString("rank");
-                importance = resultsRankAll.getInt("importance");
-                ranks rank = new ranks(rankId, rankName, importance);
+                amountNeeded = resultsRankAll.getInt("amount_needed");
+                ranks rank = new ranks(rankId, rankName, amountNeeded);
                 ranksAll.put(rankName, rank);
             }
 
@@ -498,7 +563,7 @@ class DatabaseQuerys {
                 id = resultsUserSelect.getString("id");
                 username = resultsUserSelect.getString("username");
                 rankid = resultsUserSelect.getString("rank");
-                rank = rankSelect(Integer.parseInt(rankid));
+                rank = rankSelectName(Integer.parseInt(rankid));
                 adminInt = resultsUserSelect.getString("admin");
                 if (adminInt.equals("1")) {
                     admin = "True";

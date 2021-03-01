@@ -44,10 +44,10 @@ public class adminPage {
         JMenuItem editUser = new JMenuItem("Edit User");
         aMenu.add(editUser);
         aMenu.addSeparator();
-        JMenuItem addConstraint = new JMenuItem("Add Constraint");
-        aMenu.add(addConstraint);
-        JMenuItem editConstraint = new JMenuItem("Edit Constraint");
-        aMenu.add(editConstraint);
+        JMenuItem addRank = new JMenuItem("Add Rank");
+        aMenu.add(addRank);
+        JMenuItem editRank = new JMenuItem("Edit Rank");
+        aMenu.add(editRank);
         aMenu.addSeparator();
         JMenuItem manageRequests = new JMenuItem("Manage Holiday Requests");
         aMenu.add(manageRequests);
@@ -273,6 +273,44 @@ public class adminPage {
         editUserPanel.add(btnConfirmEdits, btnConfirmEditsGrid);
         parentPanel.add(editUserPanel, "editUserPanel");
 
+        JPanel addRankPanel = new JPanel(new GridBagLayout());
+        JLabel lblRanKName = new JLabel("Rank Name: ");
+        JTextField txtRankName = new JTextField(16);
+        JLabel lblRankAmount = new JLabel("Amount Needed per Day: ");
+        JSpinner jspnAmount = new JSpinner();
+        JButton btnConfirmRank = new JButton("Add Rank");
+
+        GridBagConstraints lblRankNameGrid = new GridBagConstraints();
+        lblRankNameGrid.weightx = 1;
+        lblRankNameGrid.gridx = 0;
+        lblRankNameGrid.gridy = 0;
+        addRankPanel.add(lblRanKName, lblRankNameGrid);
+
+        GridBagConstraints txtRankNameGrid = new GridBagConstraints();
+        txtRankNameGrid.weightx = 1;
+        txtRankNameGrid.gridx = 1;
+        txtRankNameGrid.gridy = 0;
+        addRankPanel.add(txtRankName, txtRankNameGrid);
+
+        GridBagConstraints lblRankAmountGrid = new GridBagConstraints();
+        lblRankAmountGrid.weightx = 1;
+        lblRankAmountGrid.gridx = 2;
+        lblRankAmountGrid.gridy = 0;
+        addRankPanel.add(lblRankAmount, lblRankAmountGrid);
+
+        GridBagConstraints jspnAmountGrid = new GridBagConstraints();
+        jspnAmountGrid.weightx = 1;
+        jspnAmountGrid.gridx = 3;
+        jspnAmountGrid.gridy = 0;
+        addRankPanel.add(jspnAmount, jspnAmountGrid);
+
+        GridBagConstraints btnConfirmRankGrid = new GridBagConstraints();
+        btnConfirmRankGrid.weightx = 1;
+        btnConfirmRankGrid.gridx = 4;
+        btnConfirmRankGrid.gridy = 0;
+        addRankPanel.add(btnConfirmRank, btnConfirmRankGrid);
+        parentPanel.add(addRankPanel, "addRankPanel");
+
         JPanel manageRequestPanel = new JPanel(new GridBagLayout());
         JTable tblRequests = new JTable();
         JScrollPane jspaneRequests = new JScrollPane(tblRequests);
@@ -322,6 +360,11 @@ public class adminPage {
         manageRequests.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "manageRequestPanel"); }
+        });
+
+        addRank.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "addRankPanel"); }
         });
 
         viewUserPage.addActionListener(new ActionListener() {
@@ -429,6 +472,15 @@ public class adminPage {
                 String id = (String) (tblUsers.getValueAt(tblUsers.getSelectedRow(),0));
                 int id2 = Integer.parseInt(id);
                 editUserFunc(id2, changeBy, value);
+            }
+        });
+
+        btnConfirmRank.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String rankName = txtRankName.getText();
+                String rankAmount = jspnAmount.getValue().toString();
+                addRankFunc(rankName, rankAmount);
             }
         });
 
@@ -614,6 +666,27 @@ public class adminPage {
                 JOptionPane.showMessageDialog(null, "User value updated", "User Update", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, "Error updating user details!", "User Update", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+    private void addRankFunc(String rankName, String rankAmount) {
+        if (rankName.equals("")) {
+            JOptionPane.showMessageDialog(null, "Error adding rank no value entered for rank name!", "Add Rank", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        try {
+            HashMap<String, ranks> ranksHashMap = dbquery.rankSelectAll();
+            if (ranksHashMap.containsKey(rankName)) {
+                JOptionPane.showMessageDialog(null, "Error adding rank name already exists!", "Add Rank", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            } else {
+                if (dbquery.rankAdd(rankName, rankAmount)) {
+                    JOptionPane.showMessageDialog(null, "Rank Added!", "Add Rank", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error adding rank!", "Add Rank", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
