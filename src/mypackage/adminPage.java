@@ -311,6 +311,45 @@ public class adminPage {
         addRankPanel.add(btnConfirmRank, btnConfirmRankGrid);
         parentPanel.add(addRankPanel, "addRankPanel");
 
+        JPanel editRankPanel = new JPanel(new GridBagLayout());
+        JComboBox cmbEdtRankSelect = new JComboBox(ranksArr);
+        JLabel lblEditRank = new JLabel("Amount Needed per Day: ");
+        JSpinner jspnEditRankAmount = new JSpinner();
+        JButton btnRankEdit = new JButton("Edit Rank");
+        JButton btnRankDelete = new JButton("Delete Rank");
+
+        GridBagConstraints cmbEdtRankSelectGrid = new GridBagConstraints();
+        cmbEdtRankSelectGrid.weightx = 1;
+        cmbEdtRankSelectGrid.gridx = 0;
+        cmbEdtRankSelectGrid.gridy = 0;
+        cmbEdtRankSelectGrid.gridwidth = 2;
+        editRankPanel.add(cmbEdtRankSelect, cmbEdtRankSelectGrid);
+
+        GridBagConstraints lblEditRankGrid = new GridBagConstraints();
+        lblEditRankGrid.weightx = 1;
+        lblEditRankGrid.gridx = 0;
+        lblEditRankGrid.gridy = 1;
+        editRankPanel.add(lblEditRank, lblEditRankGrid);
+
+        GridBagConstraints jspnEditRankAmountGrid = new GridBagConstraints();
+        jspnEditRankAmountGrid.weightx = 1;
+        jspnEditRankAmountGrid.gridx = 1;
+        jspnEditRankAmountGrid.gridy = 1;
+        editRankPanel.add(jspnEditRankAmount, jspnEditRankAmountGrid);
+
+        GridBagConstraints btnRankDeleteGrid = new GridBagConstraints();
+        btnRankDeleteGrid.weightx = 1;
+        btnRankDeleteGrid.gridx = 0;
+        btnRankDeleteGrid.gridy = 2;
+        editRankPanel.add(btnRankDelete, btnRankDeleteGrid);
+
+        GridBagConstraints btnRankEditGrid = new GridBagConstraints();
+        btnRankEditGrid.weightx = 1;
+        btnRankEditGrid.gridx = 1;
+        btnRankEditGrid.gridy = 2;
+        editRankPanel.add(btnRankEdit, btnRankEditGrid);
+        parentPanel.add(editRankPanel, "editRankPanel");
+
         JPanel manageRequestPanel = new JPanel(new GridBagLayout());
         JTable tblRequests = new JTable();
         JScrollPane jspaneRequests = new JScrollPane(tblRequests);
@@ -365,6 +404,11 @@ public class adminPage {
         addRank.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "addRankPanel"); }
+        });
+
+        editRank.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "editRankPanel"); }
         });
 
         viewUserPage.addActionListener(new ActionListener() {
@@ -565,6 +609,15 @@ public class adminPage {
                     cmbAdminSearch.setVisible(false);
                     cmbRankSearch.setVisible(false);
                 }
+            }
+        });
+
+        cmbEdtRankSelect.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                ranks selectedRank = allRanks.get(cmbEdtRankSelect.getSelectedItem().toString());
+                int amountNeeded = selectedRank.getAmountNeeded();
+                jspnEditRankAmount.setValue(amountNeeded);
             }
         });
     }
