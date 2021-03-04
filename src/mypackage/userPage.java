@@ -309,7 +309,7 @@ public class userPage {
 
         if ((newAllowance >= 0) && (sDate.after(cDate)) && (eDate.after(cDate)) && (eDate.after(sDate) || (sDate.compareTo(eDate) == 0))) {
             try {
-                if (constraint.staffCheck(userInst.getUserRankId(), sDateStr, eDateStr) == false) {
+                if (constraint.staffCheck(userInst.getUserRankId(), sDate, eDate) == false) {
                     JOptionPane.showMessageDialog(null, "There are too many staff off during this time period", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }

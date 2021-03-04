@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 class DatabaseQuerys {
@@ -21,7 +22,7 @@ class DatabaseQuerys {
         return conn;
     }
 
-    private String usernameSelect(String id) throws SQLException {
+    private String usernameSelect(int id) throws SQLException {
         Connection con = null;
         PreparedStatement psUsernameSelect = null;
         ResultSet resultsUsernameSelect = null;
@@ -32,7 +33,7 @@ class DatabaseQuerys {
             String sqlUsernameSelectQuery = "";
             sqlUsernameSelectQuery = "SELECT username FROM users WHERE id = ?;";
             psUsernameSelect = con.prepareStatement(sqlUsernameSelectQuery);
-            psUsernameSelect.setString(1, id);
+            psUsernameSelect.setString(1, Integer.toString(id));
             resultsUsernameSelect = psUsernameSelect.executeQuery();
             while (resultsUsernameSelect.next()) {
                 username = resultsUsernameSelect.getString("username");
@@ -55,21 +56,21 @@ class DatabaseQuerys {
         }
     }
 
-    public String userRankSelect(String id) throws SQLException {
+    public int userRankSelect(int id) throws SQLException {
         Connection con = null;
         PreparedStatement psUserrankSelect = null;
         ResultSet resultsUserrankSelect = null;
-        String rank = "";
+        int rank = -1;
 
         try {
             con = this.getConnection();
             String sqlUserrankSelectQuery = "";
             sqlUserrankSelectQuery = "SELECT rank FROM users WHERE id = ?;";
             psUserrankSelect = con.prepareStatement(sqlUserrankSelectQuery);
-            psUserrankSelect.setString(1, id);
+            psUserrankSelect.setString(1, Integer.toString(id));
             resultsUserrankSelect = psUserrankSelect.executeQuery();
             while (resultsUserrankSelect.next()) {
-                rank = resultsUserrankSelect.getString("rank");
+                rank = resultsUserrankSelect.getInt("rank");
             }
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
@@ -281,7 +282,8 @@ class DatabaseQuerys {
         Connection con = null;
         PreparedStatement psUserHol = null;
         ResultSet resultsUserHol = null;
-        String sDate, eDate, rDate, aDate, status = "";
+        Date sDate, eDate, rDate, aDate = new Date();
+        String status = "";
 
         try {
             con = this.getConnection();
@@ -290,10 +292,10 @@ class DatabaseQuerys {
             psUserHol.setString(1, Integer.toString(id));
             resultsUserHol = psUserHol.executeQuery();
             while (resultsUserHol.next()) {
-                sDate = resultsUserHol.getString("holiday_start");
-                eDate = resultsUserHol.getString("holiday_end");
-                rDate = resultsUserHol.getString("date_requested");
-                aDate = resultsUserHol.getString("approval_date");
+                sDate = resultsUserHol.getDate("holiday_start");
+                eDate = resultsUserHol.getDate("holiday_end");
+                rDate = resultsUserHol.getDate("date_requested");
+                aDate = resultsUserHol.getDate("approval_date");
                 status = resultsUserHol.getString("status");
                 model.addRow(new Object[] {sDate, eDate, rDate, aDate, status});
             }
@@ -533,7 +535,8 @@ class DatabaseQuerys {
         Connection con = null;
         PreparedStatement psUserSelect = null;
         ResultSet resultsUserSelect = null;
-        String id, username, rankid, rank, adminInt, admin, allowance = "";
+        int id, rankid, adminInt, allowance = -1;
+        String username, rank, admin = "";
 
         try {
             con = this.getConnection();
@@ -560,17 +563,17 @@ class DatabaseQuerys {
             psUserSelect.setString(1, value);
             resultsUserSelect = psUserSelect.executeQuery();
             while (resultsUserSelect.next()) {
-                id = resultsUserSelect.getString("id");
+                id = resultsUserSelect.getInt("id");
                 username = resultsUserSelect.getString("username");
-                rankid = resultsUserSelect.getString("rank");
-                rank = rankSelectName(Integer.parseInt(rankid));
-                adminInt = resultsUserSelect.getString("admin");
-                if (adminInt.equals("1")) {
+                rankid = resultsUserSelect.getInt("rank");
+                rank = rankSelectName(rankid);
+                adminInt = resultsUserSelect.getInt("admin");
+                if (adminInt == 1) {
                     admin = "True";
                 } else {
                     admin = "False";
                 }
-                allowance = resultsUserSelect.getString("allowance");
+                allowance = resultsUserSelect.getInt("allowance");
                 model.addRow(new Object[] {id, username, rank, admin, allowance});
             }
 
@@ -674,7 +677,9 @@ class DatabaseQuerys {
         Connection con = null;
         PreparedStatement psReviewHol = null;
         ResultSet resultsReviewHol = null;
-        String id, userId, username, sDate, eDate, rDate, aDate, status = "";
+        int id, userId = -1;
+        String username, status = "";
+        Date sDate, eDate, rDate = new Date();
 
         try {
             con = this.getConnection();
@@ -682,12 +687,12 @@ class DatabaseQuerys {
             psReviewHol = con.prepareStatement(sqlReviewHolidayQuery);
             resultsReviewHol = psReviewHol.executeQuery();
             while (resultsReviewHol.next()) {
-                id = resultsReviewHol.getString("id");
-                userId = resultsReviewHol.getString("user_id");
+                id = resultsReviewHol.getInt("id");
+                userId = resultsReviewHol.getInt("user_id");
                 username = usernameSelect(userId);
-                sDate = resultsReviewHol.getString("holiday_start");
-                eDate = resultsReviewHol.getString("holiday_end");
-                rDate = resultsReviewHol.getString("date_requested");
+                sDate = resultsReviewHol.getDate("holiday_start");
+                eDate = resultsReviewHol.getDate("holiday_end");
+                rDate = resultsReviewHol.getDate("date_requested");
                 status = resultsReviewHol.getString("status");
                 model.addRow(new Object[] {id, userId, username, sDate, eDate, rDate, status});
             }
@@ -715,7 +720,9 @@ class DatabaseQuerys {
         Connection con = null;
         PreparedStatement psApproveHol = null;
         ResultSet resultsApproveHol = null;
-        String id, userId, userRank, sDate, eDate, rDate, aDate, status = "";
+        int id, userId, userRank = -1;
+        String status = "";
+        Date sDate, eDate, rDate, aDate = new Date();
 
         try {
             con = this.getConnection();
@@ -723,16 +730,16 @@ class DatabaseQuerys {
             psApproveHol = con.prepareStatement(sqlApproveHolidayQuery);
             resultsApproveHol = psApproveHol.executeQuery();
             while (resultsApproveHol.next()) {
-                id = resultsApproveHol.getString("id");
-                userId = resultsApproveHol.getString("user_id");
+                id = resultsApproveHol.getInt("id");
+                userId = resultsApproveHol.getInt("user_id");
                 userRank = userRankSelect(userId);
-                sDate = resultsApproveHol.getString("holiday_start");
-                eDate = resultsApproveHol.getString("holiday_end");
-                rDate = resultsApproveHol.getString("date_requested");
-                aDate = resultsApproveHol.getString("approval_date");
+                sDate = resultsApproveHol.getDate("holiday_start");
+                eDate = resultsApproveHol.getDate("holiday_end");
+                rDate = resultsApproveHol.getDate("date_requested");
+                aDate = resultsApproveHol.getDate("approval_date");
                 status = resultsApproveHol.getString("status");
-                holiday holidayEntry = new holiday(Integer.parseInt(id), Integer.parseInt(userId), Integer.parseInt(userRank), rDate, sDate, eDate, aDate, status);
-                approvedHolidays.put(Integer.parseInt(id), holidayEntry);
+                holiday holidayEntry = new holiday(id, userId, userRank, rDate, sDate, eDate, aDate, status);
+                approvedHolidays.put(id, holidayEntry);
             }
 
         } catch (Exception e) {
@@ -753,7 +760,7 @@ class DatabaseQuerys {
         return approvedHolidays;
     }
 
-    public boolean holidayUpdate(String id, String cDate, String value) throws SQLException {
+    public boolean holidayUpdate(int id, String cDate, String value) throws SQLException {
         Connection con = null;
         PreparedStatement psHolidayUpdate = null;
         int recordCount = 0;
@@ -766,7 +773,7 @@ class DatabaseQuerys {
             psHolidayUpdate = con.prepareStatement(sqlHolidayUpdateQuery);
             psHolidayUpdate.setString(1, cDate);
             psHolidayUpdate.setString(2, value);
-            psHolidayUpdate.setString(3, id);
+            psHolidayUpdate.setString(3, Integer.toString(id));
             recordCount = psHolidayUpdate.executeUpdate();
             if (recordCount == 1) {
                 resultUpdate = true;

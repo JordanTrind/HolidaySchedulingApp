@@ -21,19 +21,10 @@ import java.util.Map;
 
 public class constraints {
     DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
-    public Boolean staffCheck(int rank, String sDateString, String eDateString) {
-        SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
-        Date sDate = new Date();
-        Date eDate = new Date();
+    public Boolean staffCheck(int rank, Date sDate, Date eDate) {
         HashMap<Integer, holiday>  approvedHolidays = new HashMap<>();
         int totalStaffForRank = 0;
         int totalRequired = 0;
-        try {
-            sDate = dateForm.parse(sDateString);
-            eDate = dateForm.parse(eDateString);
-        } catch (ParseException parseException) {
-            parseException.printStackTrace();
-        }
         try {
             totalRequired = dbquery.rankSelectAmount(rank);
             totalStaffForRank = dbquery.countTotalAtRank(rank);
@@ -51,17 +42,9 @@ public class constraints {
             Map.Entry<Integer, holiday> currentEntry = iterate.next();
             int key = currentEntry.getKey();
             holiday currHoliday = currentEntry.getValue();
-            Date entrySDate = new Date();
-            Date entryEDate = new Date();
-            String entrySDateString = currHoliday.getHolidayS();
-            String entryEDateString = currHoliday.getHolidayE();
+            Date entrySDate = currHoliday.getHolidayS();
+            Date entryEDate= currHoliday.getHolidayE();
             int entryRank = currHoliday.getUserRank();
-            try {
-                entrySDate = dateForm.parse(entrySDateString);
-                entryEDate = dateForm.parse(entryEDateString);
-            } catch (ParseException parseException) {
-                parseException.printStackTrace();
-            }
             if ((entrySDate.before(eDate)) && (entryEDate.after(sDate)) && (entryRank == rank)) {
                 amountOfCounter++;
             }

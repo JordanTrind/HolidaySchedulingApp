@@ -487,10 +487,10 @@ public class adminPage {
         btnAccept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String id = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
-                String userid = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),1));
-                String sDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
-                String eDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
+                int id = (int) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
+                int userid = (int) (tblRequests.getValueAt(tblRequests.getSelectedRow(),1));
+                Date sDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
+                Date eDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
                 String value = "Accepted";
                 tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value));
             }
@@ -499,10 +499,10 @@ public class adminPage {
         btnDeny.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String id = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
-                String userid = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),1));
-                String sDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
-                String eDate = (String) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
+                int id = (int) (tblRequests.getValueAt(tblRequests.getSelectedRow(),0));
+                int userid = (int) (tblRequests.getValueAt(tblRequests.getSelectedRow(),1));
+                Date sDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
+                Date eDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
                 String value = "Rejected";
                 tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value));
             }
@@ -693,24 +693,22 @@ public class adminPage {
         }
     }
 
-    private DefaultTableModel acceptDenyHolidayFunc(String id, String userid, String sDateStr, String eDateStr, String value) {
+    private DefaultTableModel acceptDenyHolidayFunc(int id, int userid, Date sDate, Date eDate, String value) {
         constraints constraint = new constraints();
         Boolean executeUpdate = true;
         DefaultTableModel holModel = null;
         SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
         Date cDate = new Date();
-        Date sDate = new Date();
-        Date eDate = new Date();
         String cDateStr = dateForm.format(cDate);
         int rankId = -1;
 
         if (value.equals("Accepted")) {
             try {
-                rankId = Integer.parseInt(dbquery.userRankSelect(userid));
+                rankId = dbquery.userRankSelect(userid);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            if (constraint.staffCheck(rankId, sDateStr, eDateStr) == false) {
+            if (constraint.staffCheck(rankId, sDate, eDate) == false) {
                 int reply = JOptionPane.showConfirmDialog(null, "There are too many staff off during the time period shown, continuing may cause scheduling issues. Continue?", "Holiday Error", JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.NO_OPTION) {
                     executeUpdate = false;
@@ -722,16 +720,10 @@ public class adminPage {
                 dbquery.holidayUpdate(id, cDateStr, value);
             }
             if  (value.equals("Rejected")) {
-                int allowance = dbquery.userAllowanceSelect(Integer.parseInt(userid));
-                try {
-                    sDate = dateForm.parse(sDateStr);
-                    eDate = dateForm.parse(eDateStr);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                int allowance = dbquery.userAllowanceSelect(userid);
                 int dateDiff = (int) ((eDate.getTime() - sDate.getTime()) / (1000 * 60 * 60 * 24));
                 allowance += (dateDiff + 1);
-                dbquery.allowanceUpdate(Integer.parseInt(userid), allowance);
+                dbquery.allowanceUpdate(userid, allowance);
             }
             holModel = dbquery.holidayNotRevSelect();
         } catch (SQLException throwables) {
