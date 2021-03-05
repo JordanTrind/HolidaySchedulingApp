@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -492,6 +491,67 @@ class DatabaseQuerys {
         return ranksAll;
     }
 
+    public boolean rankDelete(int id) throws SQLException {
+        Connection con = null;
+        PreparedStatement psRankDelete = null;
+        int recordCounter = 0;
+        Boolean resultDelete = false;
+
+        try {
+            con = this.getConnection();
+            String sqlRankDelete = "DELETE FROM ranks WHERE id = ?;";
+            psRankDelete = con.prepareStatement(sqlRankDelete);
+            psRankDelete.setString(1, Integer.toString(id));
+            recordCounter = psRankDelete.executeUpdate();
+            if (recordCounter == 1) {
+                resultDelete = true;
+            } else {
+                resultDelete = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("Deleting rank failed!",e);
+        } finally {
+            if (psRankDelete != null) {
+                psRankDelete.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultDelete;
+    }
+
+    public boolean rankamountUpdate(int id, int allowance) throws SQLException {
+        Connection con = null;
+        PreparedStatement psRankUpdate = null;
+        int recordCount = 0;
+        Boolean resultUpdate = false;
+
+        try {
+            con = this.getConnection();
+            String sqlRankUpdate = "UPDATE ranks SET amount_needed = ? WHERE id = ?;";
+            psRankUpdate = con.prepareStatement(sqlRankUpdate);
+            psRankUpdate.setString(1, Integer.toString(allowance));
+            psRankUpdate.setString(2, Integer.toString(id));
+            recordCount = psRankUpdate.executeUpdate();
+            if (recordCount == 1) {
+                resultUpdate = true;
+            } else {
+                resultUpdate = false;
+            }
+        } catch(Exception e) {
+            throw new IllegalStateException("Updating amount needed failed!",e);
+        } finally {
+            if (psRankUpdate != null) {
+                psRankUpdate.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return resultUpdate;
+    }
+
     public boolean checkUserSelect (String username) throws SQLException {
         Connection con = null;
         PreparedStatement psUserSelect = null;
@@ -715,8 +775,8 @@ class DatabaseQuerys {
         return model;
     }
 
-    public HashMap<Integer, holiday> holidaySelectApproved() throws  SQLException {
-        HashMap<Integer, holiday> approvedHolidays = new HashMap<>();
+    public HashMap<Integer, holidays> holidaySelectApproved() throws  SQLException {
+        HashMap<Integer, holidays> approvedHolidays = new HashMap<>();
         Connection con = null;
         PreparedStatement psApproveHol = null;
         ResultSet resultsApproveHol = null;
@@ -738,8 +798,8 @@ class DatabaseQuerys {
                 rDate = resultsApproveHol.getDate("date_requested");
                 aDate = resultsApproveHol.getDate("approval_date");
                 status = resultsApproveHol.getString("status");
-                holiday holidayEntry = new holiday(id, userId, userRank, rDate, sDate, eDate, aDate, status);
-                approvedHolidays.put(id, holidayEntry);
+                holidays holidaysEntry = new holidays(id, userId, userRank, rDate, sDate, eDate, aDate, status);
+                approvedHolidays.put(id, holidaysEntry);
             }
 
         } catch (Exception e) {

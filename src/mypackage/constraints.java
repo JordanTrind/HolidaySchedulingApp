@@ -12,8 +12,6 @@ staff can only work 5 days a week
  */
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,7 +20,7 @@ import java.util.Map;
 public class constraints {
     DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
     public Boolean staffCheck(int rank, Date sDate, Date eDate) {
-        HashMap<Integer, holiday>  approvedHolidays = new HashMap<>();
+        HashMap<Integer, holidays>  approvedHolidays = new HashMap<>();
         int totalStaffForRank = 0;
         int totalRequired = 0;
         try {
@@ -37,14 +35,14 @@ public class constraints {
         add 1 to counter for people on holiday during time.
          */
         int amountOfCounter = 0;
-        Iterator<Map.Entry<Integer, holiday>> iterate = approvedHolidays.entrySet().iterator();
+        Iterator<Map.Entry<Integer, holidays>> iterate = approvedHolidays.entrySet().iterator();
         while (iterate.hasNext()) {
-            Map.Entry<Integer, holiday> currentEntry = iterate.next();
+            Map.Entry<Integer, holidays> currentEntry = iterate.next();
             int key = currentEntry.getKey();
-            holiday currHoliday = currentEntry.getValue();
-            Date entrySDate = currHoliday.getHolidayS();
-            Date entryEDate= currHoliday.getHolidayE();
-            int entryRank = currHoliday.getUserRank();
+            holidays currHolidays = currentEntry.getValue();
+            Date entrySDate = currHolidays.getHolidayS();
+            Date entryEDate= currHolidays.getHolidayE();
+            int entryRank = currHolidays.getUserRank();
             if ((entrySDate.before(eDate)) && (entryEDate.after(sDate)) && (entryRank == rank)) {
                 amountOfCounter++;
             }

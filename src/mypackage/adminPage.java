@@ -528,6 +528,20 @@ public class adminPage {
             }
         });
 
+        btnRankDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteRankFunc(cmbEdtRankSelect.getSelectedItem().toString());
+            }
+        });
+
+        btnRankEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editRankAmountFunc(cmbEdtRankSelect.getSelectedItem().toString(), jspnEditRankAmount.getValue().toString());
+            }
+        });
+
         btnAccept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -740,6 +754,35 @@ public class adminPage {
                 } else {
                     JOptionPane.showMessageDialog(null, "Error adding rank!", "Add Rank", JOptionPane.INFORMATION_MESSAGE);
                 }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void deleteRankFunc(String rankName) {
+        try {
+            HashMap<String, ranks> ranksHashMap = dbquery.rankSelectAll();
+            ranks currentRank = ranksHashMap.get(rankName);
+            if(dbquery.rankDelete(currentRank.getRankID())) {
+                JOptionPane.showMessageDialog(null, "Rank Deleted!", "Delete Rank", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error deleting Rank!", "Delete Rank", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void editRankAmountFunc (String rankName, String amountNeeded) {
+        try {
+            int amountNeededInt = Integer.parseInt(amountNeeded);
+            HashMap<String, ranks> ranksHashMap = dbquery.rankSelectAll();
+            ranks currentRank = ranksHashMap.get(rankName);
+            if(dbquery.rankamountUpdate(currentRank.getRankID(), amountNeededInt)) {
+                JOptionPane.showMessageDialog(null, "Rank Amount Updated!", "Update Rank", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error updating rank amount!", "Update Rank", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

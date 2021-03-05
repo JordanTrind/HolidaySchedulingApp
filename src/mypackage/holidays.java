@@ -2,7 +2,7 @@ package mypackage;
 
 import java.util.Date;
 
-public class holiday {
+public class holidays {
     int id;
     int userId;
     int userRank;
@@ -12,7 +12,7 @@ public class holiday {
     Date dateApprove;
     String status;
 
-    public holiday (int id, int userId, int userRank, Date dateReq, Date holidayS, Date holidayE, Date dateApprove, String status) {
+    public holidays(int id, int userId, int userRank, Date dateReq, Date holidayS, Date holidayE, Date dateApprove, String status) {
         this.id = id;
         this.userId = userId;
         this.userRank = userRank;
