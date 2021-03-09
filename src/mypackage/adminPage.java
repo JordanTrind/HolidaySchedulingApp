@@ -351,11 +351,16 @@ public class adminPage {
         parentPanel.add(editRankPanel, "editRankPanel");
 
         JPanel manageRequestPanel = new JPanel(new GridBagLayout());
+        JLabel lblOrderBy = new JLabel("Order By: ");
+        String[] arrOrderBy = {"ID", "User ID", "Holiday Start", "Holiday End", "Date Requested"};
+        String[] arrDescAsc = {"Descending", "Ascending"};
+        JComboBox cmbOrderBy = new JComboBox(arrOrderBy);
+        JComboBox cmbDescAsc = new JComboBox(arrDescAsc);
         JTable tblRequests = new JTable();
         JScrollPane jspaneRequests = new JScrollPane(tblRequests);
         DefaultTableModel tblHolModel = null;
         try {
-            tblHolModel = dbquery.holidayNotRevSelect();
+            tblHolModel = dbquery.holidayNotRevSelect("id", "DESC");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -363,23 +368,41 @@ public class adminPage {
         JButton btnAccept = new JButton("Accept");
         JButton btnDeny = new JButton("Deny");
 
+        GridBagConstraints lblOrderByGrid = new GridBagConstraints();
+        lblOrderByGrid.weightx = 1;
+        lblOrderByGrid.gridx = 0;
+        lblOrderByGrid.gridy = 0;
+        manageRequestPanel.add(lblOrderBy, lblOrderByGrid);
+
+        GridBagConstraints cmbOrderByGrid = new GridBagConstraints();
+        cmbOrderByGrid.weightx = 1;
+        cmbOrderByGrid.gridx = 1;
+        cmbOrderByGrid.gridy = 0;
+        manageRequestPanel.add(cmbOrderBy, cmbOrderByGrid);
+
+        GridBagConstraints cmbDescAscGrid = new GridBagConstraints();
+        cmbDescAscGrid.weightx = 1;
+        cmbDescAscGrid.gridx = 2;
+        cmbDescAscGrid.gridy = 0;
+        manageRequestPanel.add(cmbDescAsc, cmbDescAscGrid);
+
         GridBagConstraints jspaneRequestsGrid = new GridBagConstraints();
         jspaneRequestsGrid.weightx = 1;
         jspaneRequestsGrid.gridx = 0;
-        jspaneRequestsGrid.gridy = 0;
-        jspaneRequestsGrid.gridwidth = 2;
-        manageRequestPanel.add(jspaneRequests, jspaneRequestsGrid);
+        jspaneRequestsGrid.gridy = 1;
+        jspaneRequestsGrid.gridwidth = 3;
+         manageRequestPanel.add(jspaneRequests, jspaneRequestsGrid);
 
         GridBagConstraints btnAcceptGrid = new GridBagConstraints();
         btnAcceptGrid.weightx = 1;
         btnAcceptGrid.gridx = 0;
-        btnAcceptGrid.gridy = 1;
+        btnAcceptGrid.gridy = 2;
         manageRequestPanel.add(btnAccept, btnAcceptGrid);
 
         GridBagConstraints btnDenyGrid = new GridBagConstraints();
         btnDenyGrid.weightx = 1;
-        btnDenyGrid.gridx = 1;
-        btnDenyGrid.gridy = 1;
+        btnDenyGrid.gridx = 2;
+        btnDenyGrid.gridy = 2;
         manageRequestPanel.add(btnDeny, btnDenyGrid);
         parentPanel.add(manageRequestPanel, "manageRequestPanel");
 
@@ -550,7 +573,31 @@ public class adminPage {
                 Date sDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
                 Date eDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
                 String value = "Accepted";
-                tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value));
+                String orderBy = "";
+                String ascOrDesc = "";
+                switch (cmbOrderBy.getSelectedIndex()) {
+                    case 0:
+                        orderBy = "id";
+                        break;
+                    case 1:
+                        orderBy = "user_id";
+                        break;
+                    case 2:
+                        orderBy = "holiday_start";
+                        break;
+                    case 3:
+                        orderBy = "holiday_end";
+                        break;
+                    case 4:
+                        orderBy = "date_requested";
+                        break;
+                }
+                if (cmbDescAsc.getSelectedIndex() == 0) {
+                    ascOrDesc = "DESC";
+                } else {
+                    ascOrDesc = "ASC";
+                }
+                tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value, orderBy, ascOrDesc));
             }
         });
 
@@ -562,7 +609,101 @@ public class adminPage {
                 Date sDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),3));;
                 Date eDate = (Date) (tblRequests.getValueAt(tblRequests.getSelectedRow(),4));;
                 String value = "Rejected";
-                tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value));
+                String orderBy = "";
+                String ascOrDesc = "";
+                switch (cmbOrderBy.getSelectedIndex()) {
+                    case 0:
+                        orderBy = "id";
+                        break;
+                    case 1:
+                        orderBy = "user_id";
+                        break;
+                    case 2:
+                        orderBy = "holiday_start";
+                        break;
+                    case 3:
+                        orderBy = "holiday_end";
+                        break;
+                    case 4:
+                        orderBy = "date_requested";
+                        break;
+                }
+                if (cmbDescAsc.getSelectedIndex() == 0) {
+                    ascOrDesc = "DESC";
+                } else {
+                    ascOrDesc = "ASC";
+                }
+                tblRequests.setModel(acceptDenyHolidayFunc(id, userid, sDate, eDate, value, orderBy, ascOrDesc));
+            }
+        });
+
+        cmbDescAsc.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String orderBy = "";
+                String ascOrDesc = "";
+                switch (cmbOrderBy.getSelectedIndex()) {
+                    case 0:
+                        orderBy = "id";
+                        break;
+                    case 1:
+                        orderBy = "user_id";
+                        break;
+                    case 2:
+                        orderBy = "holiday_start";
+                        break;
+                    case 3:
+                        orderBy = "holiday_end";
+                        break;
+                    case 4:
+                        orderBy = "date_requested";
+                        break;
+                }
+                if (cmbDescAsc.getSelectedIndex() == 0) {
+                    ascOrDesc = "DESC";
+                } else {
+                    ascOrDesc = "ASC";
+                }
+                try {
+                    tblRequests.setModel(dbquery.holidayNotRevSelect(orderBy, ascOrDesc));
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        });
+
+        cmbOrderBy.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String orderBy = "";
+                String ascOrDesc = "";
+                switch (cmbOrderBy.getSelectedIndex()) {
+                    case 0:
+                        orderBy = "id";
+                        break;
+                    case 1:
+                        orderBy = "user_id";
+                        break;
+                    case 2:
+                        orderBy = "holiday_start";
+                        break;
+                    case 3:
+                        orderBy = "holiday_end";
+                        break;
+                    case 4:
+                        orderBy = "date_requested";
+                        break;
+                }
+                if (cmbDescAsc.getSelectedIndex() == 0) {
+                    ascOrDesc = "DESC";
+                } else {
+                    ascOrDesc = "ASC";
+                }
+                try {
+                    tblRequests.setModel(dbquery.holidayNotRevSelect(orderBy, ascOrDesc));
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
 
@@ -789,7 +930,7 @@ public class adminPage {
         }
     }
 
-    private DefaultTableModel acceptDenyHolidayFunc(int id, int userid, Date sDate, Date eDate, String value) {
+    private DefaultTableModel acceptDenyHolidayFunc(int id, int userid, Date sDate, Date eDate, String value, String orderBy, String ascOrDesc) {
         constraints constraint = new constraints();
         Boolean executeUpdate = true;
         DefaultTableModel holModel = null;
@@ -821,7 +962,7 @@ public class adminPage {
                 allowance += (dateDiff + 1);
                 dbquery.allowanceUpdate(userid, allowance);
             }
-            holModel = dbquery.holidayNotRevSelect();
+            holModel = dbquery.holidayNotRevSelect(orderBy, ascOrDesc);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

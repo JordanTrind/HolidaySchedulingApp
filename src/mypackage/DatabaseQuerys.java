@@ -731,7 +731,7 @@ class DatabaseQuerys {
         return resultUpdate;
     }
 
-    public DefaultTableModel holidayNotRevSelect() throws SQLException {
+    public DefaultTableModel holidayNotRevSelect(String orderBy, String ascOrDesc) throws SQLException {
         DefaultTableModel model = new DefaultTableModel(new String[] {"ID", "User ID", "Username", "Holiday Start", "Holiday End", "Date Requested","Status"}, 0);
 
         Connection con = null;
@@ -743,7 +743,7 @@ class DatabaseQuerys {
 
         try {
             con = this.getConnection();
-            String sqlReviewHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, status FROM holidays WHERE status = 'Not Reviewed';";
+            String sqlReviewHolidayQuery = String.format("SELECT id, user_id, holiday_start, holiday_end, date_requested, status FROM holidays WHERE status = 'Not Reviewed' ORDER BY %s %s;", orderBy, ascOrDesc);
             psReviewHol = con.prepareStatement(sqlReviewHolidayQuery);
             resultsReviewHol = psReviewHol.executeQuery();
             while (resultsReviewHol.next()) {
