@@ -43,7 +43,7 @@ public class constraints {
             Date entrySDate = currHolidays.getHolidayS();
             Date entryEDate= currHolidays.getHolidayE();
             int entryRank = currHolidays.getUserRank();
-            if ((entrySDate.before(eDate)) && (entryEDate.after(sDate)) && (entryRank == rank)) {
+            if ((entrySDate.compareTo(eDate) <= 0) && (entryEDate.compareTo(sDate) >= 0) && (entryRank == rank)) {
                 amountOfCounter++;
             }
         }
