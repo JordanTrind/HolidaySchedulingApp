@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -311,6 +312,7 @@ public class userPage {
             try {
                 if (constraint.staffCheck(userInst.getUserRankId(), sDate, eDate) == false) {
                     JOptionPane.showMessageDialog(null, "There are too many staff off during this time period", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
+                    HashMap<Date, Date> alternativeHolidays = constraint.alternativeHoliday(userInst.getUserRankId(), sDate, eDate);
                     return;
                 }
                 if (dbquery.holidayAdd(userInst.getUserID(), cDateStr, sDateStr, eDateStr)) {
