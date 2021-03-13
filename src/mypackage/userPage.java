@@ -17,9 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class userPage {
@@ -311,8 +309,19 @@ public class userPage {
         if ((newAllowance >= 0) && (sDate.after(cDate)) && (eDate.after(cDate)) && (eDate.after(sDate) || (sDate.compareTo(eDate) == 0))) {
             try {
                 if (constraint.staffCheck(userInst.getUserRankId(), sDate, eDate) == false) {
-                    JOptionPane.showMessageDialog(null, "There are too many staff off during this time period", "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
                     HashMap<Date, Date> alternativeHolidays = constraint.alternativeHoliday(userInst.getUserRankId(), sDate, eDate);
+                    String stringAlternates = "";
+                    Iterator<Map.Entry<Date, Date>> iterate = alternativeHolidays.entrySet().iterator();
+                    while (iterate.hasNext()) {
+                        Map.Entry<Date, Date> currentEntry = iterate.next();
+                        Date startDate = currentEntry.getKey();
+                        Date endDate = currentEntry.getValue();
+                        String entrySDateStr = dateForm.format(startDate);
+                        String entryEDateStr = dateForm.format(endDate);
+                        stringAlternates = stringAlternates + ("\n"+ entrySDateStr + " - " + entryEDateStr);
+                    }
+                    String alternateMessage = ("There are too many staff off during this time period \nAlternate holiday dates are shown below:" + stringAlternates);
+                    JOptionPane.showMessageDialog(null, alternateMessage, "Holiday Error", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
                 if (dbquery.holidayAdd(userInst.getUserID(), cDateStr, sDateStr, eDateStr)) {
