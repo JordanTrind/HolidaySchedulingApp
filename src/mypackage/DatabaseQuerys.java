@@ -383,7 +383,7 @@ class DatabaseQuerys {
         return resultAdd;
     }
 
-    private String rankSelectName(int id) throws SQLException {
+    public String rankSelectName(int id) throws SQLException {
         Connection con = null;
         PreparedStatement psRank = null;
         ResultSet resultsRank = null;

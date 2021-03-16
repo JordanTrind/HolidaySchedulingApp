@@ -938,15 +938,18 @@ public class adminPage {
         Date cDate = new Date();
         String cDateStr = dateForm.format(cDate);
         int rankId = -1;
+        String rankName = "";
 
         if (value.equals("Accepted")) {
             try {
                 rankId = dbquery.userRankSelect(userid);
+                rankName = dbquery.rankSelectName(rankId);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
             if (constraint.staffCheck(rankId, sDate, eDate) == false) {
-                int reply = JOptionPane.showConfirmDialog(null, "There are too many staff off during the time period shown, continuing may cause scheduling issues. Continue?", "Holiday Error", JOptionPane.YES_NO_OPTION);
+                String messageBuilder = String.format("There are too many %s off during the time period shown, continuing may cause scheduling issues. Continue?", rankName);
+                int reply = JOptionPane.showConfirmDialog(null, messageBuilder, "Holiday Error", JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.NO_OPTION) {
                     executeUpdate = false;
                 }
