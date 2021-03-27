@@ -1,5 +1,9 @@
 package mypackage;
 
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -11,10 +15,7 @@ import java.sql.Array;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 public class adminPage {
     DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
@@ -406,6 +407,56 @@ public class adminPage {
         manageRequestPanel.add(btnDeny, btnDenyGrid);
         parentPanel.add(manageRequestPanel, "manageRequestPanel");
 
+        JPanel generateSchedulePanel = new JPanel(new GridBagLayout());
+        JLabel lblStart = new JLabel("Start Date: ");
+        UtilDateModel sdateModel = new UtilDateModel();
+        Properties sdateProp = new Properties();
+        sdateProp.put("text.today", "Today");
+        sdateProp.put("text.month", "Month");
+        sdateProp.put("text.year", "Year");
+        JDatePanelImpl sdatePanel = new JDatePanelImpl(sdateModel, sdateProp);
+        JDatePickerImpl startDate = new JDatePickerImpl(sdatePanel, new DateTextFormatter());
+        JLabel lblEnd = new JLabel("End Date: ");
+        UtilDateModel edateModel = new UtilDateModel();
+        Properties edateProp = new Properties();
+        edateProp.put("text.today", "Today");
+        edateProp.put("text.month", "Month");
+        edateProp.put("text.year", "Year");
+        JDatePanelImpl edatePanel = new JDatePanelImpl(edateModel, edateProp);
+        JDatePickerImpl endDate = new JDatePickerImpl(edatePanel, new DateTextFormatter());
+        JButton btnGenerate = new JButton("Generate Schedule");
+
+        GridBagConstraints lblStartGrid = new GridBagConstraints();
+        lblStartGrid.weightx = 1;
+        lblStartGrid.gridx = 0;
+        lblStartGrid.gridy = 1;
+        generateSchedulePanel.add(lblStart, lblStartGrid);
+
+        GridBagConstraints sDateGrid = new GridBagConstraints();
+        sDateGrid.weightx = 1;
+        sDateGrid.gridx = 1;
+        sDateGrid.gridy = 1;
+        generateSchedulePanel.add(startDate, sDateGrid);
+
+        GridBagConstraints lblEndGrid = new GridBagConstraints();
+        lblEndGrid.weightx = 1;
+        lblEndGrid.gridx = 0;
+        lblEndGrid.gridy = 2;
+        generateSchedulePanel.add(lblEnd, lblEndGrid);
+
+        GridBagConstraints eDateGrid = new GridBagConstraints();
+        eDateGrid.weightx = 1;
+        eDateGrid.gridx = 1;
+        eDateGrid.gridy = 2;
+        generateSchedulePanel.add(endDate, eDateGrid);
+
+        GridBagConstraints btnGenerateGrid = new GridBagConstraints();
+        btnGenerateGrid.weightx = 1;
+        btnGenerateGrid.gridx = 1;
+        btnGenerateGrid.gridy = 3;
+        generateSchedulePanel.add(btnGenerate, btnGenerateGrid);
+        parentPanel.add(generateSchedulePanel, "generateSchedulePanel");
+
         cLayout.show(parentPanel, "manageRequestPanel");
         aFrame.setVisible(true);
 
@@ -432,6 +483,11 @@ public class adminPage {
         editRank.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "editRankPanel"); }
+        });
+
+        generateSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { cLayout.show(parentPanel, "generateSchedulePanel"); }
         });
 
         viewUserPage.addActionListener(new ActionListener() {

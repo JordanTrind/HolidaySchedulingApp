@@ -67,9 +67,9 @@ public class userPage {
         JLabel lblEnd = new JLabel("End Date: ");
         UtilDateModel edateModel = new UtilDateModel();
         Properties edateProp = new Properties();
-        sdateProp.put("text.today", "Today");
-        sdateProp.put("text.month", "Month");
-        sdateProp.put("text.year", "Year");
+        edateProp.put("text.today", "Today");
+        edateProp.put("text.month", "Month");
+        edateProp.put("text.year", "Year");
         JDatePanelImpl edatePanel = new JDatePanelImpl(edateModel, edateProp);
         JDatePickerImpl endDate = new JDatePickerImpl(edatePanel, new DateTextFormatter());
         JButton btnRHol = new JButton("Submit Holiday");
