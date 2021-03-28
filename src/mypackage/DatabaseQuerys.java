@@ -775,6 +775,53 @@ class DatabaseQuerys {
         return model;
     }
 
+    public HashMap<Integer, holidays> holidaySelectSchedule(String scheduleStartDate, String scheduleEndDate) throws  SQLException {
+        HashMap<Integer, holidays> scheduleHolidays = new HashMap<>();
+        Connection con = null;
+        PreparedStatement psScheduleHol = null;
+        ResultSet resultsScheduleHol = null;
+        int id, userId, userRank = -1;
+        String status = "";
+        Date sDate, eDate, rDate, aDate = new Date();
+
+        try {
+            con = this.getConnection();
+            String sqlScheduleHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, approval_date, status FROM holidays WHERE holiday_start <= ? AND holiday_end >= ?;";
+            psScheduleHol = con.prepareStatement(sqlScheduleHolidayQuery);
+            psScheduleHol.setString(1, scheduleEndDate);
+            psScheduleHol.setString(2, scheduleStartDate);
+            resultsScheduleHol = psScheduleHol.executeQuery();
+            while (resultsScheduleHol.next()) {
+                id = resultsScheduleHol.getInt("id");
+                userId = resultsScheduleHol.getInt("user_id");
+                userRank = userRankSelect(userId);
+                sDate = resultsScheduleHol.getDate("holiday_start");
+                eDate = resultsScheduleHol.getDate("holiday_end");
+                rDate = resultsScheduleHol.getDate("date_requested");
+                aDate = resultsScheduleHol.getDate("approval_date");
+                status = resultsScheduleHol.getString("status");
+                holidays holidaysEntry = new holidays(id, userId, userRank, rDate, sDate, eDate, aDate, status);
+                scheduleHolidays.put(id, holidaysEntry);
+            }
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+
+        finally {
+            if (resultsScheduleHol != null) {
+                resultsScheduleHol.close();
+            }
+            if (psScheduleHol != null) {
+                psScheduleHol.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return scheduleHolidays;
+    }
+
     public HashMap<Integer, holidays> holidaySelectApproved() throws  SQLException {
         HashMap<Integer, holidays> approvedHolidays = new HashMap<>();
         Connection con = null;

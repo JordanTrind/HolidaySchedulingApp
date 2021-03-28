@@ -693,6 +693,15 @@ public class adminPage {
             }
         });
 
+         btnGenerate.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                 String sDateStr = startDate.getJFormattedTextField().getText();
+                 String eDateStr = endDate.getJFormattedTextField().getText();
+                 generateScheduleFunc(sDateStr, eDateStr);
+             }
+         });
+
         cmbDescAsc.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -1026,5 +1035,13 @@ public class adminPage {
             throwables.printStackTrace();
         }
         return holModel;
+    }
+
+    private void generateScheduleFunc(String sDateStr, String eDateStr) {
+        try {
+            HashMap<Integer, holidays> holidaysMap = dbquery.holidaySelectSchedule(sDateStr,eDateStr);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
