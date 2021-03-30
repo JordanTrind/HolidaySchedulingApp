@@ -425,6 +425,13 @@ public class adminPage {
         JDatePanelImpl edatePanel = new JDatePanelImpl(edateModel, edateProp);
         JDatePickerImpl endDate = new JDatePickerImpl(edatePanel, new DateTextFormatter());
         JButton btnGenerate = new JButton("Generate Schedule");
+        JLabel lblAcceptedTable = new JLabel("Accepted Holidays");
+        JTable tblAccepted = new JTable();
+        JScrollPane jspaneAccepted = new JScrollPane(tblAccepted);
+        JLabel lblRejectedTable = new JLabel("Rejected Holidays");
+        JTable tblRejected = new JTable();
+        JScrollPane jspaneRejected = new JScrollPane(tblRejected);
+        JButton btnAcceptSchedule = new JButton("Accept Schedule");
 
         GridBagConstraints lblStartGrid = new GridBagConstraints();
         lblStartGrid.weightx = 1;
@@ -455,6 +462,42 @@ public class adminPage {
         btnGenerateGrid.gridx = 1;
         btnGenerateGrid.gridy = 3;
         generateSchedulePanel.add(btnGenerate, btnGenerateGrid);
+
+        GridBagConstraints lblAcceptedTableGrid = new GridBagConstraints();
+        lblAcceptedTableGrid.weightx = 1;
+        lblAcceptedTableGrid.gridx = 0;
+        lblAcceptedTableGrid.gridy = 0;
+        generateSchedulePanel.add(lblAcceptedTable, lblAcceptedTableGrid);
+        lblAcceptedTable.setVisible(false);
+
+        GridBagConstraints lblRejectedTableGrid = new GridBagConstraints();
+        lblRejectedTableGrid.weightx = 1;
+        lblRejectedTableGrid.gridx = 1;
+        lblRejectedTableGrid.gridy = 0;
+        generateSchedulePanel.add(lblRejectedTable, lblRejectedTableGrid);
+        lblRejectedTable.setVisible(false);
+
+        GridBagConstraints jspaneAcceptedGrid = new GridBagConstraints();
+        jspaneAcceptedGrid.weightx = 1;
+        jspaneAcceptedGrid.gridx = 0;
+        jspaneAcceptedGrid.gridy = 1;
+        generateSchedulePanel.add(jspaneAccepted, jspaneAcceptedGrid);
+        jspaneAccepted.setVisible(false);
+
+        GridBagConstraints jspaneRejectedGrid = new GridBagConstraints();
+        jspaneRejectedGrid.weightx = 1;
+        jspaneRejectedGrid.gridx = 1;
+        jspaneRejectedGrid.gridy = 1;
+        generateSchedulePanel.add(jspaneRejected, jspaneRejectedGrid);
+        jspaneRejected.setVisible(false);
+
+        GridBagConstraints btnAcceptScheduleGrid = new GridBagConstraints();
+        btnAcceptScheduleGrid.weightx = 1;
+        btnAcceptScheduleGrid.gridx = 0;
+        btnAcceptScheduleGrid.gridy = 2;
+        generateSchedulePanel.add(btnAcceptSchedule, btnAcceptScheduleGrid);
+        btnAcceptSchedule.setVisible(false);
+
         parentPanel.add(generateSchedulePanel, "generateSchedulePanel");
 
         cLayout.show(parentPanel, "manageRequestPanel");
@@ -698,7 +741,18 @@ public class adminPage {
              public void actionPerformed(ActionEvent e) {
                  String sDateStr = startDate.getJFormattedTextField().getText();
                  String eDateStr = endDate.getJFormattedTextField().getText();
-                 generateScheduleFunc(sDateStr, eDateStr);
+                 endDate.setVisible(false);
+                 startDate.setVisible(false);
+                 btnGenerate.setVisible(false);
+                 lblStart.setVisible(false);
+                 lblEnd.setVisible(false);
+                 lblAcceptedTable.setVisible(true);
+                 lblRejectedTable.setVisible(true);
+                 jspaneAccepted.setVisible(true);
+                 jspaneRejected.setVisible(true);
+                 btnAcceptSchedule.setVisible(true);
+                 DefaultTableModel approvedHolidaysModel = generateScheduleFunc(sDateStr, eDateStr);
+                 tblAccepted.setModel(approvedHolidaysModel);
              }
          });
 
@@ -1037,8 +1091,22 @@ public class adminPage {
         return holModel;
     }
 
-    private void generateScheduleFunc(String sDateStr, String eDateStr) {
+    private DefaultTableModel generateScheduleFunc(String sDateStr, String eDateStr) {
         myAlgo algorthm = new myAlgo();
-        algorthm.algoBegin(sDateStr, eDateStr);
+        HashMap<Integer, holidays> approvedHolidays = algorthm.algoBegin(sDateStr, eDateStr);
+        DefaultTableModel acceptedHolidaysModel = new DefaultTableModel(new String[] {"ID", "User ID", "Holiday Start", "Holiday End", "Date Requested","Status"}, 0);
+        Iterator<Map.Entry<Integer, holidays>> iterate = approvedHolidays.entrySet().iterator();
+        while (iterate.hasNext()) {
+            Map.Entry<Integer, holidays> currentEntry = iterate.next();
+            holidays currHoliday = currentEntry.getValue();
+            int id = currHoliday.getId();
+            int userId = currHoliday.getUserId();
+            Date sDate = currHoliday.getHolidayS();
+            Date eDate = currHoliday.getHolidayE();
+            Date rDate = currHoliday.getDateReq();
+            String status = currHoliday.getHolidayStatus();
+            acceptedHolidaysModel.addRow(new Object[]{id, userId, sDate, eDate, rDate, status});
+        }
+        return acceptedHolidaysModel;
     }
 }

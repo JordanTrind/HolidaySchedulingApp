@@ -18,7 +18,7 @@ public class myAlgo {
      */
     constraints constraintCheck = new constraints();
     DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
-    public void algoBegin(String sDateStr, String eDateStr) {
+    public HashMap<Integer, holidays> algoBegin(String sDateStr, String eDateStr) {
         SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
         Date sDate = null;
         Date eDate = null;
@@ -51,5 +51,7 @@ public class myAlgo {
                rejectedHolidays.put(currentKey, currentHoliday);
             }
         }
+        approvedHolidays.putAll(addedToApprovedHolidays);
+        return approvedHolidays;
     }
 }

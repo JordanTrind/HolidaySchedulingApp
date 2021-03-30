@@ -37,6 +37,8 @@ public class holidays {
 
     public Date getHolidayS() { return holidayS; }
 
+    public Date getDateReq() { return dateReq; }
+
     public Date getHolidayE() { return holidayE; }
 
     public String getHolidayStatus() { return status; }
