@@ -38,4 +38,6 @@ public class holidays {
     public Date getHolidayS() { return holidayS; }
 
     public Date getHolidayE() { return holidayE; }
+
+    public String getHolidayStatus() { return status; }
 }

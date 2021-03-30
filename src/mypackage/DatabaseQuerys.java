@@ -786,7 +786,7 @@ class DatabaseQuerys {
 
         try {
             con = this.getConnection();
-            String sqlScheduleHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, approval_date, status FROM holidays WHERE holiday_start <= ? AND holiday_end >= ?;";
+            String sqlScheduleHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, approval_date, status FROM holidays WHERE status = 'Not Reviewed' AND holiday_start <= ? AND holiday_end >= ? ORDER BY date_requested DESC;";
             psScheduleHol = con.prepareStatement(sqlScheduleHolidayQuery);
             psScheduleHol.setString(1, scheduleEndDate);
             psScheduleHol.setString(2, scheduleStartDate);
@@ -822,30 +822,32 @@ class DatabaseQuerys {
         return scheduleHolidays;
     }
 
-    public HashMap<Integer, holidays> holidaySelectApproved() throws  SQLException {
+    public HashMap<Integer, holidays> holidaySelectApproved(String sDate, String eDate) throws  SQLException {
         HashMap<Integer, holidays> approvedHolidays = new HashMap<>();
         Connection con = null;
         PreparedStatement psApproveHol = null;
         ResultSet resultsApproveHol = null;
         int id, userId, userRank = -1;
         String status = "";
-        Date sDate, eDate, rDate, aDate = new Date();
+        Date outputSDate, outputEDate, rDate, aDate = new Date();
 
         try {
             con = this.getConnection();
-            String sqlApproveHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, approval_date, status FROM holidays WHERE status = 'Accepted';";
+            String sqlApproveHolidayQuery = "SELECT id, user_id, holiday_start, holiday_end, date_requested, approval_date, status FROM holidays WHERE status = 'Accepted' AND holiday_start <= ? AND holiday_end >= ?;";
             psApproveHol = con.prepareStatement(sqlApproveHolidayQuery);
+            psApproveHol.setString(1, eDate);
+            psApproveHol.setString(2, sDate);
             resultsApproveHol = psApproveHol.executeQuery();
             while (resultsApproveHol.next()) {
                 id = resultsApproveHol.getInt("id");
                 userId = resultsApproveHol.getInt("user_id");
                 userRank = userRankSelect(userId);
-                sDate = resultsApproveHol.getDate("holiday_start");
-                eDate = resultsApproveHol.getDate("holiday_end");
+                outputSDate = resultsApproveHol.getDate("holiday_start");
+                outputEDate = resultsApproveHol.getDate("holiday_end");
                 rDate = resultsApproveHol.getDate("date_requested");
                 aDate = resultsApproveHol.getDate("approval_date");
                 status = resultsApproveHol.getString("status");
-                holidays holidaysEntry = new holidays(id, userId, userRank, rDate, sDate, eDate, aDate, status);
+                holidays holidaysEntry = new holidays(id, userId, userRank, rDate, outputSDate, outputEDate, aDate, status);
                 approvedHolidays.put(id, holidaysEntry);
             }
 

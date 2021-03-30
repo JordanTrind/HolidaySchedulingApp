@@ -1038,10 +1038,7 @@ public class adminPage {
     }
 
     private void generateScheduleFunc(String sDateStr, String eDateStr) {
-        try {
-            HashMap<Integer, holidays> holidaysMap = dbquery.holidaySelectSchedule(sDateStr,eDateStr);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        myAlgo algorthm = new myAlgo();
+        algorthm.algoBegin(sDateStr, eDateStr);
     }
 }
