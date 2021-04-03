@@ -16,10 +16,13 @@ public class myAlgo {
 
     Start adding holidays to hashmap carry on checking until all holidays checked
      */
-    constraints constraintCheck = new constraints();
-    DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
-    public HashMap<Integer, holidays> algoBegin(String sDateStr, String eDateStr) {
+    private HashMap<Integer, holidays> approvedHolidays;
+    private HashMap<Integer, holidays> addedToApprovedHolidays;
+    private HashMap<Integer, holidays> rejectedHolidays;
+    public void algoBegin(String sDateStr, String eDateStr) {
         SimpleDateFormat dateForm = new SimpleDateFormat("yyyy-MM-dd");
+        databaseQuerys dbquery = databaseQuerys.getDatabaseQuerysInst();
+        constraints constraintCheck = new constraints();
         Date sDate = null;
         Date eDate = null;
         try {
@@ -28,15 +31,16 @@ public class myAlgo {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        HashMap<Integer, holidays> approvedHolidays = constraintCheck.approvedHolidays(sDate, eDate);
+        approvedHolidays = constraintCheck.approvedHolidays(sDate, eDate);
         HashMap<Integer, holidays> unapprovedHolidays = null;
         try {
             unapprovedHolidays = dbquery.holidaySelectSchedule(sDateStr, eDateStr);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        HashMap<Integer, holidays> addedToApprovedHolidays = new HashMap<Integer, holidays>();
-        HashMap<Integer, holidays> rejectedHolidays = new HashMap<Integer, holidays>();
+        addedToApprovedHolidays = new HashMap<Integer, holidays>();
+        rejectedHolidays = new HashMap<Integer, holidays>();
+
         Iterator<Map.Entry<Integer, holidays>> iterate = unapprovedHolidays.entrySet().iterator();
         while (iterate.hasNext()) {
             Map.Entry<Integer, holidays> currentEntry = iterate.next();
@@ -52,6 +56,17 @@ public class myAlgo {
             }
         }
         approvedHolidays.putAll(addedToApprovedHolidays);
+    }
+
+    public HashMap<Integer, holidays> getapprovedHolidays() {
         return approvedHolidays;
+    }
+
+    public HashMap<Integer, holidays> getAddedToApprovedHolidays() {
+        return addedToApprovedHolidays;
+    }
+
+    public HashMap<Integer, holidays> getRejectedHolidays() {
+        return rejectedHolidays;
     }
 }

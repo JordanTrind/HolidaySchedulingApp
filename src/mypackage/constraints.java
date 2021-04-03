@@ -11,13 +11,12 @@ Preference of days to work
 staff can only work 5 days a week
  */
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class constraints {
-    DatabaseQuerys dbquery = DatabaseQuerys.getDatabaseQuerysInst();
+    databaseQuerys dbquery = databaseQuerys.getDatabaseQuerysInst();
     public Boolean staffCheck(int rank, Date sDate, Date eDate) {
         HashMap<Integer, holidays>  approvedHolidays = approvedHolidays(sDate, eDate);
         int totalStaffForRank = totalStaffAtRank(rank);
