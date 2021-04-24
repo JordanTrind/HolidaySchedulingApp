@@ -286,5 +286,7 @@ public class adminActions {
                 throwables.printStackTrace();
             }
         }
+
+        JOptionPane.showMessageDialog(null, "Holiday schedule approved!", "Generate Holiday Schedule", JOptionPane.INFORMATION_MESSAGE);
     }
 }

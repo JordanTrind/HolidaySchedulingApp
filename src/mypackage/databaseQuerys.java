@@ -39,9 +39,7 @@ class databaseQuerys {
             }
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsUsernameSelect != null) {
                 resultsUsernameSelect.close();
             }
@@ -73,8 +71,7 @@ class databaseQuerys {
             }
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-        finally {
+        } finally {
             if (resultsUserrankSelect != null) {
                 resultsUserrankSelect.close();
             }
@@ -126,12 +123,9 @@ class databaseQuerys {
             } else {
                 resultOfQuery = false;
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsLogin != null) {
                 resultsLogin.close();
             }
@@ -141,8 +135,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultOfQuery;
         }
-        return resultOfQuery;
     }
 
     public boolean passwordUpdate(int id, String password) throws SQLException {
@@ -172,8 +166,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultUpdate;
         }
-        return resultUpdate;
     }
 
     public boolean holidayAdd(int id, String cDate, String sDate, String eDate) throws SQLException {
@@ -206,8 +200,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultAdd;
         }
-        return resultAdd;
     }
 
     public boolean allowanceUpdate(int id, int allowance) throws SQLException {
@@ -237,8 +231,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultUpdate;
         }
-        return resultUpdate;
     }
 
     public int userAllowanceSelect(int id) throws SQLException {
@@ -258,9 +252,7 @@ class databaseQuerys {
             }
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsUserAllowance != null) {
                 resultsUserAllowance.close();
             }
@@ -270,9 +262,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return allowance;
         }
-
-        return allowance;
     }
 
     public DefaultTableModel userHolidaySelect(int id) throws SQLException {
@@ -298,12 +289,9 @@ class databaseQuerys {
                 status = resultsUserHol.getString("status");
                 model.addRow(new Object[] {sDate, eDate, rDate, aDate, status});
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsUserHol != null) {
                 resultsUserHol.close();
             }
@@ -313,9 +301,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return model;
         }
-
-        return model;
     }
 
     public boolean rankAdd(String rankName, String rankAmount) throws SQLException {
@@ -345,8 +332,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultAdd;
         }
-        return resultAdd;
     }
 
     public boolean userAdd(String username, String password, int rank, int admin, int allowance) throws SQLException {
@@ -379,8 +366,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultAdd;
         }
-        return resultAdd;
     }
 
     public String rankSelectName(int id) throws SQLException {
@@ -398,12 +385,9 @@ class databaseQuerys {
             while (resultsRank.next()) {
                 rank = resultsRank.getString("rank");;
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsRank != null) {
                 resultsRank.close();
             }
@@ -413,8 +397,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return rank;
         }
-        return rank;
     }
 
     public int rankSelectAmount(int id) throws SQLException {
@@ -432,12 +416,9 @@ class databaseQuerys {
             while (resultsRank.next()) {
                 rank = Integer.parseInt(resultsRank.getString("amount_needed"));
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsRank != null) {
                 resultsRank.close();
             }
@@ -447,8 +428,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return rank;
         }
-        return rank;
     }
 
     public HashMap<String, ranks> rankSelectAll() throws SQLException {
@@ -472,12 +453,9 @@ class databaseQuerys {
                 ranks rank = new ranks(rankId, rankName, amountNeeded);
                 ranksAll.put(rankName, rank);
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsRankAll != null) {
                 resultsRankAll.close();
             }
@@ -487,8 +465,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return ranksAll;
         }
-        return ranksAll;
     }
 
     public boolean rankDelete(int id) throws SQLException {
@@ -517,8 +495,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultDelete;
         }
-        return resultDelete;
     }
 
     public boolean rankamountUpdate(int id, int allowance) throws SQLException {
@@ -548,8 +526,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultUpdate;
         }
-        return resultUpdate;
     }
 
     public boolean checkUserSelect (String username) throws SQLException {
@@ -574,9 +552,7 @@ class databaseQuerys {
             }
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsUserSelect != null) {
                 resultsUserSelect.close();
             }
@@ -600,7 +576,6 @@ class databaseQuerys {
 
         try {
             con = this.getConnection();
-
             String sqlUSelectQuery = "";
             switch (searchBy) {
                 case "Username":
@@ -636,12 +611,9 @@ class databaseQuerys {
                 allowance = resultsUserSelect.getInt("allowance");
                 model.addRow(new Object[] {id, username, rank, admin, allowance});
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsUserSelect != null) {
                 resultsUserSelect.close();
             }
@@ -651,9 +623,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return model;
         }
-
-        return model;
     }
 
     public boolean userDelete(int id) throws SQLException {
@@ -682,8 +653,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultDelete;
         }
-        return resultDelete;
     }
 
     public boolean userUpdate(int id, String changeBy, String value) throws SQLException {
@@ -727,8 +698,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultUpdate;
         }
-        return resultUpdate;
     }
 
     public DefaultTableModel holidayNotRevSelect(String orderBy, String ascOrDesc) throws SQLException {
@@ -756,12 +727,9 @@ class databaseQuerys {
                 status = resultsReviewHol.getString("status");
                 model.addRow(new Object[] {id, userId, username, sDate, eDate, rDate, status});
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsReviewHol != null) {
                 resultsReviewHol.close();
             }
@@ -771,8 +739,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return model;
         }
-        return model;
     }
 
     public HashMap<Integer, holidays> holidaySelectSchedule(String scheduleStartDate, String scheduleEndDate) throws  SQLException {
@@ -803,12 +771,9 @@ class databaseQuerys {
                 holidays holidaysEntry = new holidays(id, userId, userRank, rDate, sDate, eDate, aDate, status);
                 scheduleHolidays.put(id, holidaysEntry);
             }
-
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsScheduleHol != null) {
                 resultsScheduleHol.close();
             }
@@ -818,8 +783,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return scheduleHolidays;
         }
-        return scheduleHolidays;
     }
 
     public HashMap<Integer, holidays> holidaySelectApproved(String sDate, String eDate) throws  SQLException {
@@ -853,9 +818,7 @@ class databaseQuerys {
 
         } catch (Exception e) {
             throw new IllegalStateException("Cannot connect the database!", e);
-        }
-
-        finally {
+        } finally {
             if (resultsApproveHol != null) {
                 resultsApproveHol.close();
             }
@@ -865,8 +828,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return approvedHolidays;
         }
-        return approvedHolidays;
     }
 
     public boolean holidayUpdate(int id, String cDate, String value) throws SQLException {
@@ -898,8 +861,8 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return resultUpdate;
         }
-        return resultUpdate;
     }
 
     public int countTotalAtRank(int rank) throws SQLException {
@@ -929,7 +892,7 @@ class databaseQuerys {
             if (con != null) {
                 con.close();
             }
+            return count;
         }
-        return count;
     }
 }

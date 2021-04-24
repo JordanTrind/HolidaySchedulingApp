@@ -430,6 +430,7 @@ public class adminView {
         JTable tblRejected = new JTable();
         JScrollPane jspaneRejected = new JScrollPane(tblRejected);
         JButton btnAcceptSchedule = new JButton("Accept Schedule");
+        JButton btnRejectSchedule = new JButton("Reject Schedule");
 
         GridBagConstraints lblStartGrid = new GridBagConstraints();
         lblStartGrid.weightx = 1;
@@ -495,6 +496,13 @@ public class adminView {
         btnAcceptScheduleGrid.gridy = 2;
         generateSchedulePanel.add(btnAcceptSchedule, btnAcceptScheduleGrid);
         btnAcceptSchedule.setVisible(false);
+
+        GridBagConstraints btnRejectScheduleGrid = new GridBagConstraints();
+        btnRejectScheduleGrid.weightx = 1;
+        btnRejectScheduleGrid.gridx = 1;
+        btnRejectScheduleGrid.gridy = 2;
+        generateSchedulePanel.add(btnRejectSchedule, btnRejectScheduleGrid);
+        btnRejectSchedule.setVisible(false);
 
         parentPanel.add(generateSchedulePanel, "generateSchedulePanel");
 
@@ -749,6 +757,7 @@ public class adminView {
                  jspaneAccepted.setVisible(true);
                  jspaneRejected.setVisible(true);
                  btnAcceptSchedule.setVisible(true);
+                 btnRejectSchedule.setVisible(true);
                  adminAct.generateScheduleFunc(sDateStr, eDateStr);
                  tblAccepted.setModel(adminAct.getAcceptedHolidaysModel());
                  tblRejected.setModel(adminAct.getRejectedHolidaysModel());
@@ -768,7 +777,25 @@ public class adminView {
                  jspaneAccepted.setVisible(false);
                  jspaneRejected.setVisible(false);
                  btnAcceptSchedule.setVisible(false);
+                 btnRejectSchedule.setVisible(false);
                  adminAct.acceptScheduleFunc();
+             }
+         });
+
+         btnRejectSchedule.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                 endDate.setVisible(true);
+                 startDate.setVisible(true);
+                 btnGenerate.setVisible(true);
+                 lblStart.setVisible(true);
+                 lblEnd.setVisible(true);
+                 lblAcceptedTable.setVisible(false);
+                 lblRejectedTable.setVisible(false);
+                 jspaneAccepted.setVisible(false);
+                 jspaneRejected.setVisible(false);
+                 btnAcceptSchedule.setVisible(false);
+                 btnRejectSchedule.setVisible(false);
              }
          });
 
