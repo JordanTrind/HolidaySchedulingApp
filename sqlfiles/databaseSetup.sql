@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server version:               10.1.28-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win32
--- HeidiSQL Version:             9.5.0.5196
+-- Server version:               10.4.17-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Version:             11.2.0.6213
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -10,6 +10,7 @@
 /*!50503 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
 -- Dumping database structure for holidayschedulingapp
@@ -28,15 +29,15 @@ CREATE TABLE IF NOT EXISTS `holidays` (
   PRIMARY KEY (`id`),
   KEY `FK_holidays_users` (`user_id`),
   CONSTRAINT `FK_holidays_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table holidayschedulingapp.holidays: ~125 rows (approximately)
 /*!40000 ALTER TABLE `holidays` DISABLE KEYS */;
 INSERT INTO `holidays` (`id`, `user_id`, `date_requested`, `holiday_start`, `holiday_end`, `approval_date`, `status`) VALUES
-	(1, 6, '2021-02-16', '2021-02-17', '2021-02-18', '2021-02-22', 'Accepted'),
-	(2, 6, '2021-02-19', '2021-02-22', '2021-02-24', '2021-02-22', 'Rejected'),
-	(3, 9, '2021-02-19', '2021-02-25', '2021-02-26', '2021-02-22', 'Accepted'),
-	(4, 6, '2021-02-19', '2021-03-01', '2021-03-02', '2021-02-23', 'Rejected'),
+	(1, 6, '2021-02-16', '2021-04-30', '2021-05-18', '2021-02-22', 'Accepted'),
+	(2, 6, '2021-02-19', '2021-04-30', '2021-05-24', '2021-02-22', 'Rejected'),
+	(3, 9, '2021-02-19', '2021-04-30', '2021-05-16', '2021-02-22', 'Accepted'),
+	(4, 6, '2021-02-19', '2021-04-30', '2021-05-02', '2021-02-23', 'Rejected'),
 	(5, 59, '2020-03-05', '2021-07-15', '2021-08-24', NULL, 'Not Reviewed'),
 	(6, 160, '2020-10-20', '2021-08-04', '2021-08-18', NULL, 'Not Reviewed'),
 	(7, 101, '2020-10-23', '2021-06-19', '2021-09-12', NULL, 'Not Reviewed'),
@@ -44,7 +45,7 @@ INSERT INTO `holidays` (`id`, `user_id`, `date_requested`, `holiday_start`, `hol
 	(9, 200, '2020-10-14', '2021-05-12', '2021-05-20', NULL, 'Not Reviewed'),
 	(10, 104, '2021-01-26', '2021-05-18', '2021-06-06', NULL, 'Not Reviewed'),
 	(11, 11, '2020-11-17', '2021-09-13', '2021-10-08', NULL, 'Not Reviewed'),
-	(12, 164, '2020-08-12', '2021-05-05', '2021-09-24', NULL, 'Not Reviewed'),
+	(12, 164, '2020-08-12', '2021-05-05', '2021-09-24', '2021-03-11', 'Accepted'),
 	(13, 30, '2020-11-12', '2021-10-16', '2021-12-25', NULL, 'Not Reviewed'),
 	(14, 47, '2020-10-03', '2021-07-09', '2021-09-01', NULL, 'Not Reviewed'),
 	(15, 158, '2020-12-22', '2021-06-02', '2021-11-21', NULL, 'Not Reviewed'),
@@ -53,11 +54,11 @@ INSERT INTO `holidays` (`id`, `user_id`, `date_requested`, `holiday_start`, `hol
 	(18, 132, '2020-11-19', '2021-11-26', '2021-12-06', NULL, 'Not Reviewed'),
 	(19, 48, '2021-01-24', '2021-05-04', '2021-05-31', NULL, 'Not Reviewed'),
 	(20, 37, '2020-10-23', '2021-10-19', '2021-10-26', NULL, 'Not Reviewed'),
-	(21, 189, '2020-12-23', '2021-04-29', '2021-06-21', NULL, 'Not Reviewed'),
+	(21, 189, '2020-12-23', '2021-04-30', '2021-06-21', '2021-04-03', 'Accepted'),
 	(22, 10, '2020-08-23', '2021-08-31', '2021-11-08', NULL, 'Not Reviewed'),
 	(23, 57, '2020-06-28', '2021-06-07', '2021-08-16', NULL, 'Not Reviewed'),
 	(24, 64, '2021-01-08', '2021-08-03', '2021-09-28', NULL, 'Not Reviewed'),
-	(25, 79, '2020-07-06', '2021-04-20', '2021-05-07', NULL, 'Not Reviewed'),
+	(25, 79, '2020-07-06', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
 	(26, 121, '2020-07-09', '2021-09-15', '2021-09-16', NULL, 'Not Reviewed'),
 	(27, 83, '2020-09-05', '2021-10-20', '2021-11-17', NULL, 'Not Reviewed'),
 	(28, 198, '2020-03-11', '2021-09-23', '2021-10-14', NULL, 'Not Reviewed'),
@@ -77,13 +78,13 @@ INSERT INTO `holidays` (`id`, `user_id`, `date_requested`, `holiday_start`, `hol
 	(42, 148, '2020-02-24', '2021-05-15', '2021-05-31', NULL, 'Not Reviewed'),
 	(43, 44, '2020-12-16', '2021-06-11', '2021-07-09', NULL, 'Not Reviewed'),
 	(44, 118, '2020-08-20', '2021-10-16', '2021-11-01', NULL, 'Not Reviewed'),
-	(45, 177, '2020-07-24', '2021-04-17', '2021-05-15', NULL, 'Not Reviewed'),
+	(45, 177, '2020-07-24', '2021-04-30', '2021-05-15', '2021-04-03', 'Accepted'),
 	(46, 144, '2020-06-04', '2021-08-02', '2021-11-08', NULL, 'Not Reviewed'),
 	(47, 104, '2020-11-29', '2021-07-12', '2021-10-31', NULL, 'Not Reviewed'),
 	(48, 41, '2020-11-30', '2021-06-03', '2021-08-26', NULL, 'Not Reviewed'),
 	(49, 118, '2020-05-16', '2021-06-30', '2021-07-07', NULL, 'Not Reviewed'),
 	(50, 123, '2021-01-03', '2021-06-07', '2021-07-02', NULL, 'Not Reviewed'),
-	(51, 168, '2020-03-23', '2021-04-11', '2021-05-04', NULL, 'Not Reviewed'),
+	(51, 168, '2020-03-23', '2021-04-30', '2021-05-04', '2021-04-03', 'Accepted'),
 	(52, 92, '2021-01-25', '2021-08-29', '2021-11-10', NULL, 'Not Reviewed'),
 	(53, 100, '2020-09-13', '2021-08-19', '2021-11-21', NULL, 'Not Reviewed'),
 	(54, 195, '2020-12-05', '2021-08-20', '2021-08-21', NULL, 'Not Reviewed'),
@@ -106,7 +107,7 @@ INSERT INTO `holidays` (`id`, `user_id`, `date_requested`, `holiday_start`, `hol
 	(71, 60, '2020-04-21', '2021-08-11', '2021-08-28', NULL, 'Not Reviewed'),
 	(72, 27, '2021-01-08', '2021-10-18', '2021-11-29', NULL, 'Not Reviewed'),
 	(73, 56, '2020-04-23', '2021-05-10', '2021-10-10', NULL, 'Not Reviewed'),
-	(74, 122, '2020-07-08', '2021-04-05', '2021-04-30', NULL, 'Not Reviewed'),
+	(74, 122, '2020-07-08', '2021-04-30', '2021-05-30', '2021-04-03', 'Accepted'),
 	(75, 195, '2020-03-29', '2021-10-21', '2021-11-26', NULL, 'Not Reviewed'),
 	(76, 165, '2020-03-09', '2021-07-16', '2021-07-25', NULL, 'Not Reviewed'),
 	(77, 163, '2020-12-18', '2021-07-06', '2021-12-23', NULL, 'Not Reviewed'),
@@ -131,33 +132,37 @@ INSERT INTO `holidays` (`id`, `user_id`, `date_requested`, `holiday_start`, `hol
 	(96, 143, '2021-02-06', '2021-07-19', '2021-11-29', NULL, 'Not Reviewed'),
 	(97, 118, '2021-02-13', '2021-05-26', '2021-06-27', NULL, 'Not Reviewed'),
 	(98, 34, '2020-06-08', '2021-05-25', '2021-06-03', NULL, 'Not Reviewed'),
-	(99, 95, '2020-06-20', '2021-04-12', '2021-05-01', NULL, 'Not Reviewed'),
+	(99, 95, '2020-06-20', '2021-04-30', '2021-05-01', '2021-04-03', 'Accepted'),
 	(100, 23, '2021-01-19', '2021-08-29', '2021-09-28', NULL, 'Not Reviewed'),
 	(101, 172, '2020-03-20', '2021-05-22', '2021-05-29', '2021-02-27', 'Accepted'),
 	(102, 129, '2020-11-16', '2021-07-24', '2021-08-09', '2021-02-27', 'Accepted'),
 	(103, 19, '2020-11-24', '2021-08-13', '2021-12-29', '2021-02-27', 'Accepted'),
 	(104, 25, '2020-06-12', '2021-06-08', '2021-06-10', '2021-02-27', 'Accepted'),
 	(105, 6, '2021-02-16', '2021-12-24', '2021-12-25', '2021-02-22', 'Accepted'),
-	(106, 156, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Not Reviewed'),
-	(107, 147, '2021-02-19', '2021-04-25', '2021-04-26', '2021-03-02', 'Accepted'),
-	(108, 27, '2021-02-19', '2021-04-25', '2021-04-26', '2021-03-02', 'Accepted'),
-	(109, 26, '2021-02-19', '2021-04-25', '2021-04-26', '2021-03-01', 'Accepted'),
-	(110, 161, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(111, 163, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-27', 'Accepted'),
-	(112, 167, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-28', 'Accepted'),
-	(113, 91, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(114, 160, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(115, 129, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(116, 127, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(117, 77, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(118, 36, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(119, 67, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(120, 7, '2021-02-19', '2021-04-25', '2021-04-26', '2021-03-01', 'Accepted'),
-	(121, 19, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(122, 21, '2021-02-19', '2021-04-25', '2021-04-26', '2021-03-01', 'Accepted'),
-	(123, 39, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-22', 'Accepted'),
-	(124, 203, '2021-02-19', '2021-04-25', '2021-04-26', '2021-02-27', 'Accepted'),
-	(125, 7, '2021-02-28', '2021-04-27', '2021-04-28', '2021-02-28', 'Rejected');
+	(106, 156, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
+	(107, 147, '2021-02-19', '2021-04-30', '2021-05-07', '2021-03-02', 'Accepted'),
+	(108, 27, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
+	(109, 26, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
+	(110, 161, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
+	(111, 163, '2021-02-19', '2021-04-30', '2021-05-07', '2021-02-27', 'Accepted'),
+	(112, 167, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
+	(113, 91, '2021-02-19', '2021-04-30', '2021-05-07', '2021-02-22', 'Accepted'),
+	(114, 160, '2021-02-19', '2021-04-30', '2021-05-07', '2021-02-22', 'Accepted'),
+	(115, 129, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
+	(116, 127, '2021-02-19', '2021-04-30', '2021-05-07', '2021-02-22', 'Accepted'),
+	(117, 77, '2021-02-19', '2021-04-30', '2021-05-07', '2021-02-22', 'Accepted'),
+	(118, 36, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Rejected'),
+	(119, 67, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Rejected'),
+	(120, 7, '2021-02-19', '2021-04-30', '2021-05-07', '2021-03-01', 'Accepted'),
+	(121, 19, '2021-02-19', '2021-04-30', '2021-05-07', '2021-04-03', 'Rejected'),
+	(122, 21, '2021-02-19', '2021-04-30', '2021-05-07', '2021-03-01', 'Accepted'),
+	(123, 39, '2021-02-19', '2021-04-30', '2021-05-07', '2021-02-22', 'Accepted'),
+	(124, 203, '2021-02-19', '2021-04-30', '2021-05-07', '2021-02-27', 'Accepted'),
+	(125, 7, '2021-02-28', '2021-04-30', '2021-05-07', '2021-02-28', 'Rejected'),
+	(126, 6, '2021-03-11', '2021-04-30', '2021-05-07', '2021-04-03', 'Rejected'),
+	(127, 6, '2021-03-11', '2021-04-30', '2021-05-07', '2021-04-03', 'Rejected'),
+	(128, 7, '2021-03-11', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted'),
+	(130, 6, '2021-03-29', '2021-04-30', '2021-05-07', '2021-04-03', 'Accepted');
 /*!40000 ALTER TABLE `holidays` ENABLE KEYS */;
 
 -- Dumping structure for table holidayschedulingapp.ranks
@@ -166,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `ranks` (
   `rank` varchar(50) DEFAULT NULL,
   `amount_needed` int(3) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table holidayschedulingapp.ranks: ~4 rows (approximately)
 /*!40000 ALTER TABLE `ranks` DISABLE KEYS */;
@@ -174,7 +179,7 @@ INSERT INTO `ranks` (`id`, `rank`, `amount_needed`) VALUES
 	(1, 'Admin', 0),
 	(2, 'Worker', 70),
 	(3, 'Manager', 5),
-	(4, 'Trainer', 15);
+	(4, 'Trainer', 16);
 /*!40000 ALTER TABLE `ranks` ENABLE KEYS */;
 
 -- Dumping structure for table holidayschedulingapp.users
@@ -182,9 +187,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `rank` int(11) NOT NULL DEFAULT '0',
-  `admin` tinyint(4) NOT NULL DEFAULT '0',
-  `allowance` int(2) NOT NULL DEFAULT '28',
+  `rank` int(11) NOT NULL DEFAULT 0,
+  `admin` tinyint(4) NOT NULL DEFAULT 0,
+  `allowance` int(2) NOT NULL DEFAULT 28,
   PRIMARY KEY (`id`),
   KEY `FK_users_ranks` (`rank`),
   CONSTRAINT `FK_users_ranks` FOREIGN KEY (`rank`) REFERENCES `ranks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -193,8 +198,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table holidayschedulingapp.users: ~202 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `username`, `password`, `rank`, `admin`, `allowance`) VALUES
-	(6, 'Admin', '$2a$09$.kQNl0R.VOBhH30pfhZCVeBAwxPbUr87TZNSo6.G/EPxtDpeGLlDe', 1, 1, 28),
-	(7, 'Jeff', '$2a$09$kPwvjzcS/i8YuDLqKOpVa.KE00LNvf3/V7ovdtB4uJqXeXyV8y.1e', 3, 0, 26),
+	(6, 'Admin', '$2a$09$.kQNl0R.VOBhH30pfhZCVeBAwxPbUr87TZNSo6.G/EPxtDpeGLlDe', 1, 1, 19),
+	(7, 'Jeff', '$2a$09$kPwvjzcS/i8YuDLqKOpVa.KE00LNvf3/V7ovdtB4uJqXeXyV8y.1e', 3, 0, 24),
 	(8, 'Russell Pearson', '$2a$09$kPwvjzcS/i8YuDLqKOpVa.KE00LNvf3/V7ovdtB4uJqXeXyV8y.1e', 4, 0, 9),
 	(9, 'Keaton Peck', '$2a$09$kPwvjzcS/i8YuDLqKOpVa.KE00LNvf3/V7ovdtB4uJqXeXyV8y.1e', 3, 0, 3),
 	(10, 'Kitra Burks', '$2a$09$kPwvjzcS/i8YuDLqKOpVa.KE00LNvf3/V7ovdtB4uJqXeXyV8y.1e', 4, 0, 20),
@@ -398,5 +403,6 @@ INSERT INTO `users` (`id`, `username`, `password`, `rank`, `admin`, `allowance`)
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
