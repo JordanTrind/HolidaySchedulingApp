@@ -293,20 +293,20 @@ public class adminView {
 
         GridBagConstraints lblRankAmountGrid = new GridBagConstraints();
         lblRankAmountGrid.weightx = 1;
-        lblRankAmountGrid.gridx = 2;
-        lblRankAmountGrid.gridy = 0;
+        lblRankAmountGrid.gridx = 0;
+        lblRankAmountGrid.gridy = 1;
         addRankPanel.add(lblRankAmount, lblRankAmountGrid);
 
         GridBagConstraints jspnAmountGrid = new GridBagConstraints();
         jspnAmountGrid.weightx = 1;
-        jspnAmountGrid.gridx = 3;
-        jspnAmountGrid.gridy = 0;
+        jspnAmountGrid.gridx = 1;
+        jspnAmountGrid.gridy = 1;
         addRankPanel.add(jspnAmount, jspnAmountGrid);
 
         GridBagConstraints btnConfirmRankGrid = new GridBagConstraints();
         btnConfirmRankGrid.weightx = 1;
-        btnConfirmRankGrid.gridx = 4;
-        btnConfirmRankGrid.gridy = 0;
+        btnConfirmRankGrid.gridx = 0;
+        btnConfirmRankGrid.gridy = 2;
         addRankPanel.add(btnConfirmRank, btnConfirmRankGrid);
         parentPanel.add(addRankPanel, "addRankPanel");
 
